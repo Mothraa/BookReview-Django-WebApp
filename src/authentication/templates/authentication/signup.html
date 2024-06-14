@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto p-4 max-w-lg">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-4">Création d'un compte</h1>
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">S'inscrire</button>
+            {% comment %} <input type="submit" value="S'inscrire" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"> {% endcomment %}
+        </form>
+    </div>
+</div>
+{% endblock content %}
