@@ -6,8 +6,10 @@ from authentication.forms import LoginForm, UserRegistrationForm
 
 
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     form = LoginForm()
-    message = ''
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -15,15 +17,15 @@ def login_page(request):
                 username=form.cleaned_data['email'],
                 password=form.cleaned_data['password'],
             )
-        if user:
-            login(request, user)
-            # message = f"Bonjour, {user.email} ! Vous êtes connecté."
-            return redirect(settings.LOGIN_REDIRECT_URL)
-        else:
-            message = "Identifiants invalides"
+            if user:
+                login(request, user)
+                return redirect(settings.LOGIN_REDIRECT_URL)
+            else:
+                form.add_error(None, "Identifiant ou mot de passe invalide.")
     return render(
-        request, 'authentication/login.html', context={'form': form, 'message': message}
-        )
+        request, 'authentication/login.html', context={'form': form}
+    )
+
 
 
 def logout_user(request):

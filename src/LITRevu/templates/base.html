@@ -1,7 +1,7 @@
 <!doctype html>
-{% load static tailwind_tags %}
 <html lang="fr">
     <head>
+        {% load static tailwind_tags %}
         {% tailwind_css %}
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,18 +13,32 @@
         <link rel="mask-icon" href="{% static 'favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
+        {% comment %} CDN popper.js pour les infobulles {% endcomment %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
 
         <title>LITReview</title>
     </head>
     <body class="bg-gray-100 text-gray-700">
-        <header class="bg-white text-green-700 p-4">
-            <a href="{% url 'home' %}">
-                <h1 class="text-2xl font-bold">LITReview</h1>
-            </a>
+        <header class="bg-white text-green-700 p-4 flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'home' %}">LITReview</a>
+                {% else %}
+                    <a href="/">LITReview</a>
+                {% endif %}
+            </h1>
             {% if user.is_authenticated %}
-            <p>Vous êtes connecté en tant que <strong>{{ request.user }}</strong>. 
-                <a href="{% url 'authentication-logout' %}" class="text-blue-400 hover:underline">Se déconnecter</a>
-            </p>
+            <div class="w-full md:w-auto flex flex-col-reverse md:flex-row md:items-center md:space-x-24">
+                <div class="flex flex-col items-center md:flex-row space-y-4 md:space-y-0 md:space-x-12 order-2 md:order-1 mt-2 md:mt-0">
+                    <a href="{% url 'flux' %}" class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">Flux</a>
+                    <a href="{% url 'posts' %}" class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">Posts</a>
+                    <a href="{% url 'abonnements' %}" class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">Abonnements</a>
+                </div>
+                <div class="flex flex-col items-end order-1 md:order-2 mb-2 md:mb-0">
+                    <p><strong>{{ request.user }}</strong></p>
+                    <a href="{% url 'authentication-logout' %}" class="text-green-700 hover:underline">Se déconnecter</a>
+                </div>
+            </div>
             {% endif %}
         </header>
         <main class="container mx-auto p-4">
@@ -33,5 +47,7 @@
         <footer class="bg-white text-gray-400 p-4 text-center">
             <p>Contacts</p>
         </footer>
+
+        <script src="{% static 'js/main.js' %}"></script>
     </body>
 </html>
