@@ -142,6 +142,9 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 LOGIN_URL = 'authentication.urls'
 LOGIN_REDIRECT_URL = 'home'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media/'
+
 # pour django-tailwind
 TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = [

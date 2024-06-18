@@ -40,6 +40,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Tooltips rating stars avec popper.js
+document.addEventListener('DOMContentLoaded', (event) => {
+    const stars = document.querySelectorAll('.star');
+    const tooltip = document.querySelector('.tooltip');
+
+    stars.forEach(star => {
+        star.addEventListener('mouseenter', () => {
+            const tooltipText = star.getAttribute('data-tooltip');
+            tooltip.textContent = tooltipText;
+            tooltip.classList.add('opacity-100');
+            tooltip.classList.remove('opacity-0');
+        });
+
+        star.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('opacity-100');
+            tooltip.classList.add('opacity-0');
+        });
+    });
+});
 // survol du menu principal
 // document.addEventListener('DOMContentLoaded', function() {
 //     const links = document.querySelectorAll('a.text-green-700');

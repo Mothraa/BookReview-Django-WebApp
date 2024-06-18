@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -30,16 +31,29 @@ def login_page(request):
 
 def logout_user(request):
     logout(request)
+    messages.success(request, "Vous avez été déconnecté avec succès.")
     return redirect("authentication-login")
 
 
 def signup(request):
+    # messages.success(request, "test success")
+    # messages.error(request, "test error")
+    # messages.warning(request, "test warning")
+    # messages.info(request, "test info")
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
+            # message "flash"
+            messages.success(request, "Votre compte a été créé avec succès.")
             # TODO connecter l'utilisateur
             return redirect('authentication-login')
+        else:
+            messages.error(
+                request,
+                "Erreur lors de la création du compte.\
+                Si l'erreur persiste veuillez prendre contact avec votre administrateur."
+            )
     else:
         # on affiche le formulaire vide
         form = UserRegistrationForm()
