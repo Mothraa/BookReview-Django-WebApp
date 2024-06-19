@@ -12,9 +12,11 @@
                 </div>
                 
                     <h2>Photos</h2>
+
                     {% for ticket in tickets %}
-                        <img src="{{ ticket.image.url }}">
-                        <p>{{ ticket.image }}</p>
+                    {% comment %} mettre une valeur par défaut quand pas de photo {% endcomment %}
+                        {% comment %} <img src="{{ ticket.image.url }}">
+                        <p>{{ ticket.image }}</p> {% endcomment %}
                     {% endfor %}
                 {% comment %} <div class="tickets-section mb-8">
                     <h2 class="text-xl font-semibold mb-4">Tickets</h2>
