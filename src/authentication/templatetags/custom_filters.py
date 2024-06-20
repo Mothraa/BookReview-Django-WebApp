@@ -1,26 +1,20 @@
 from django import template
 from django.utils.safestring import mark_safe
+from django.forms.boundfield import BoundField
 
 register = template.Library()
 
 @register.filter(name='add_attributes')
 def add_attributes(field, css_and_placeholder):
-    # Django ne permet pas directement d'utiliser plusieurs arguments dans les filtres de modèle, a creuser
-    css, placeholder = css_and_placeholder.split(',')
-    return mark_safe(field.as_widget(attrs={"class": css, "placeholder": placeholder}))
+    if isinstance(field, BoundField):  # Vérifie si field est un objet de champ de formulaire lié
+        if ';' in css_and_placeholder:
+            css, placeholder = css_and_placeholder.split(';')
+        else:
+            css = css_and_placeholder
+            placeholder = ''
 
-
-# from django import template
-# from django.utils.safestring import mark_safe
-
-# register = template.Library()
-
-
-# @register.filter(name='add_class')
-# def add_class(field, css):
-#     return mark_safe(field.as_widget(attrs={"class": css}))
-
-
-# @register.filter(name='add_placeholder')
-# def add_placeholder(field, text):
-#     return mark_safe(field.as_widget(attrs={"placeholder": text}))
+        # Ajoute les attributs CSS et placeholder au widget du champ
+        field.field.widget.attrs.update({'class': css.strip(), 'placeholder': placeholder.strip()})
+        return field.as_widget()  # Utilise la méthode as_widget() pour rendre le champ avec les nouveaux attributs
+    else:
+        return field  # Renvoie la valeur d'origine si ce n'est pas un champ de formulaire

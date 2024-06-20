@@ -1,6 +1,9 @@
+from os import path
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
+
+from .utils.custom_thumbnails import has_changed, create_thumb, Image
 
 
 class Ticket(models.Model):
@@ -9,6 +12,29 @@ class Ticket(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, verbose_name='Image')
     time_created = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+
+        # surcharge de la methode save pour convertir les images
+        if has_changed(self, 'image'):
+            # Convertir l'image en jpg et créé des miniatures
+            filename = path.splitext(path.split(self.image.name)[-1])[0]
+            filename = f"{filename}.jpg"
+
+            image = Image.open(self.image)
+            if image.mode not in ('L', 'RGB'):
+                image = image.convert('RGB')
+
+            # Redimensionner l'image principale
+            self.image = create_thumb(image, settings.IMAGE_MAX_SIZE)
+            self.image.name = filename
+
+            # Redimensionner l'image pour la miniature
+            self.thumbnail = create_thumb(image, settings.THUMB_MAX_SIZE)
+            self.thumbnail.name = f'_{filename}'
+
+        super().save(*args, **kwargs)
+    
 
     def __str__(self):
         return self.title

@@ -28,7 +28,6 @@ def login_page(request):
     )
 
 
-
 def logout_user(request):
     logout(request)
     messages.success(request, "Vous avez été déconnecté avec succès.")

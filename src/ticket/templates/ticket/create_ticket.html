@@ -12,23 +12,27 @@
             {% csrf_token %}
             <div class="mb-4">
                 <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
-                <input type="text" name="title" id="title" value="{% if form.title.value %}{{ form.title.value }}{% endif %}" class="form-input w-full">
+                <input type="text" name="title" id="title" value="{% if form.title.value %}{{ form.title.value }}{% endif %}" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 {% if form.title.errors %}
                     <p class="text-red-500 text-xs italic">{{ form.title.errors }}</p>
                 {% endif %}
             </div>
             <div class="mb-4">
                 <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea name="description" id="description" rows="4" class="form-textarea w-full resize-none">{% if form.description.value %}{{ form.description.value }}{% endif %}</textarea>
+                <textarea name="description" id="description" rows="4" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{% if form.description.value %}{{ form.description.value }}{% endif %}</textarea>
                 {% if form.description.errors %}
                     <p class="text-red-500 text-xs italic">{{ form.description.errors }}</p>
                 {% endif %}
             </div>
             <div class="mb-4">
-                <label for="image" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">
-                    <span>Télécharger fichier</span>
-                    <input type="file" name="image" id="image" class="sr-only">
-                </label>
+                <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+                <div class="flex items-center">
+                    <label for="image-upload" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 cursor-pointer">
+                        <span>Télécharger fichier</span>
+                    </label>
+                    <span id="image-name" class="ml-3 text-sm text-gray-600">{% if form.instance.image %}{{ form.instance.image.name }}{% endif %}</span>
+                    <input type="file" name="image" id="image-upload" class="sr-only">
+                </div>
                 {% if form.image.errors %}
                     <p class="text-red-500 text-xs italic">{{ form.image.errors }}</p>
                 {% endif %}

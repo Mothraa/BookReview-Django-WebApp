@@ -24,9 +24,9 @@
                     {% for field in form %}
                         <div class="flex flex-col relative group">
                             {% if field.name == 'email' %}
-                                {{ field|add_attributes:"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300,E-mail" }}
+                                {{ field|add_attributes:"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300;E-mail" }}
                             {% elif field.name == 'password' %}
-                                {{ field|add_attributes:"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300,Mot de passe" }}
+                                {{ field|add_attributes:"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300;Mot de passe" }}
                             {% else %}
                                 {{ field }}
                             {% endif %}

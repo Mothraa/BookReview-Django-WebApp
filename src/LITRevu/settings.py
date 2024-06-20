@@ -151,3 +151,7 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
+# pour le redimensionnement des images en "thumbnails"
+IMAGE_MAX_SIZE = (800, 600)
+THUMB_MAX_SIZE = (300, 300)

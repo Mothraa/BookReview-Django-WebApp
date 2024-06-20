@@ -1,7 +1,7 @@
 # from django.contrib import admin
 from django.urls import path
 
-from ticket.views import home, flux, posts, abonnements, create_ticket, create_review
+from ticket.views import home, flux, posts, create_ticket, create_review, subscription, remove_subscription
 
 urlpatterns = [
     path('home/', home, name='home'),
@@ -17,6 +17,7 @@ urlpatterns = [
     # path('unsubscribe/<int:subscription_id>/', views.unsubscribe, name='unsubscribe'),
 
 
-    path('posts', posts, name='posts'),
-    path('abonnements', abonnements, name='abonnements'),
+    path('posts/', posts, name='posts'),
+    path('subscription/', subscription, name='subscription'),
+    path('subscription/remove/<int:subscription_id>/', remove_subscription, name='remove_subscription'),
 ]

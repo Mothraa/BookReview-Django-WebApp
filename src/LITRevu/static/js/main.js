@@ -213,3 +213,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// formulaire create_ticket : pour afficher le nom du fichier image une fois selectionné
+document.getElementById('id_image').onchange = function () {
+    var fileName = this.value.split('\\').pop();
+    document.getElementById('image-name').innerText = fileName ? 'Selected Image: ' + fileName : '';
+  };

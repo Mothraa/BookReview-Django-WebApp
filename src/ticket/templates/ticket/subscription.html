@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <form method="post" class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h1 class="text-2xl font-bold mb-4 text-center">Suivre d'autres utilisateurs</h1>
+        {% csrf_token %}
+        {{ add_user_form.non_field_errors }}
+        <div class="mb-4 flex items-center">
+            <div class="flex-grow mr-2">
+                {{ add_user_form.followed_user|add_attributes:"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300;Nom d'utilisateur (Pseudo)" }}
+            </div>
+            <button type="submit" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">Envoyer</button>
+        </div>
+        {% for error in add_user_form.followed_user.errors %}
+        <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+    </form>
+
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h1 class="text-2xl font-bold mb-4 text-center">Abonnements</h1>
+        <ul>
+            {% for abonnement in abonnements %}
+                <li class="flex justify-between items-center mb-2">
+                    <div class="flex-grow p-2 text-black bg-stone-200 rounded-lg shadow-md ">
+                        {{ abonnement.followed_user.nickname }}
+                    </div>
+                    <form method="post" action="{% url 'remove_subscription' abonnement.id %}" class="ml-2">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 shadow-sm dark:bg-gray-700">Supprimer</button>
+                    </form>
+                </li>
+            {% empty %}
+                <li>Aucun abonnement.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Abonnés</h1>
+        <ul>
+            {% for abonne in abonnes %}
+                <li class="mb-2 p-2 text-black bg-stone-200 rounded-lg shadow-md dark:bg-gray-700">
+                    {% comment %} shadow-md {% endcomment %}
+                    {{ abonne.user.nickname }}
+                </li>
+            {% empty %}
+                <li>Aucun abonné.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
