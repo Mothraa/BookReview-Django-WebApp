@@ -20,6 +20,27 @@ def flux(request):
 
 @login_required
 def posts(request):
+    tickets = Ticket.objects.filter(user=request.user).order_by('-time_created')
+    return render(request, 'ticket/posts.html', {'tickets': tickets})
+
+
+@login_required
+def ticket_edit(request, ticket_id):
+    pass
+    # try:
+    #     subscription = UserFollows.objects.get(id=subscription_id, user=request.user)
+    #     followed_user_nickname = subscription.followed_user.nickname
+    #     subscription.delete()
+    #     # TODO ajouter le nom de l'utilisateur
+    #     messages.success(request, f"Abonnement à {followed_user_nickname} supprimé.")
+    # except UserFollows.DoesNotExist:
+    #     messages.error(request, "Vous ne suivez pas cet utilisateur.")
+
+    return render(request, 'ticket/home.html')
+
+@login_required
+def ticket_delete(request, ticket_id):
+    pass
     return render(request, 'ticket/home.html')
 
 

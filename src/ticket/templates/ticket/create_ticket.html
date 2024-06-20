@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
 {% block content %}
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4 text-center">Créer un ticket</h1>
@@ -30,8 +31,10 @@
                     <label for="image-upload" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 cursor-pointer">
                         <span>Télécharger fichier</span>
                     </label>
-                    <span id="image-name" class="ml-3 text-sm text-gray-600">{% if form.instance.image %}{{ form.instance.image.name }}{% endif %}</span>
-                    <input type="file" name="image" id="image-upload" class="sr-only">
+                    <div class="ml-3">
+                        <span id="image-name" class="text-sm text-gray-600"></span>
+                    </div>
+                    <input type="file" name="image" id="image-upload" class="sr-only" onchange="displayFileName()" accept="image/jpeg, image/png, image/gif, image/webp">
                 </div>
                 {% if form.image.errors %}
                     <p class="text-red-500 text-xs italic">{{ form.image.errors }}</p>
@@ -44,4 +47,12 @@
         </form>
     </div>
 </div>
+
+<script>
+    function displayFileName() {
+        const input = document.getElementById('image-upload');
+        const fileName = input.files[0].name;
+        document.getElementById('image-name').textContent = fileName;
+    }
+</script>
 {% endblock %}

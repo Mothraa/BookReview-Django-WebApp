@@ -14,9 +14,9 @@ class Ticket(models.Model):
     time_created = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-
+        # TODO : ajouter un validator sur le format d'image pris en charge en entrée, actuellement fait uniquement par le frontend
         # surcharge de la methode save pour convertir les images
-        if has_changed(self, 'image'):
+        if self.image and has_changed(self, 'image'):
             # Convertir l'image en jpg et créé des miniatures
             filename = path.splitext(path.split(self.image.name)[-1])[0]
             filename = f"{filename}.jpg"
@@ -34,7 +34,6 @@ class Ticket(models.Model):
             self.thumbnail.name = f'_{filename}'
 
         super().save(*args, **kwargs)
-    
 
     def __str__(self):
         return self.title

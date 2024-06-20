@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4 text-center">Vos Posts</h1>
+</div>
+    
+{% for ticket in tickets %}
+    <div class="bg-white p-6 rounded-lg shadow-md mb-4">
+        <p>Vous avez publié un ticket</p>
+        <p class="text-right">{{ ticket.time_created|date:"H:i, j F Y" }}</p>
+        <h2 class="font-semibold">{{ ticket.title }}</h2>
+
+        <p class="mt-2">{{ ticket.description }}</p>
+        {% comment %} TODO : ajouter un bouton voir plus si la description est longue {% endcomment %}
+        {% if ticket.image %}
+            <img class="mt-4" src="{{ ticket.image.url }}" alt="Image du ticket">
+        {% endif %}
+        
+        {% comment %} <p>Utilisateur :{{ ticket.user.nickname }}</p> {% endcomment %}
+        
+
+
+
+        <div class="flex justify-end">
+            <a href="{% url 'ticket_edit' ticket.pk %}" class="btn btn-primary bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
+            <a href="{% url 'ticket_delete' ticket.pk %}" class="btn btn-danger bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</a>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock content %}

@@ -18,72 +18,7 @@
                         {% comment %} <img src="{{ ticket.image.url }}">
                         <p>{{ ticket.image }}</p> {% endcomment %}
                     {% endfor %}
-                {% comment %} <div class="tickets-section mb-8">
-                    <h2 class="text-xl font-semibold mb-4">Tickets</h2>
-                    <!-- Exemple de boucle sur les tickets -->
-                    {% for ticket in tickets %}
-                    <div class="ticket bg-white p-4 rounded-lg shadow-md mb-4">
-                        <div class="ticket-header mb-2">
-                            <h3 class="text-lg font-bold">{{ ticket.title }}</h3>
-                            <small class="text-gray-500">{{ ticket.time_created|date:"d M Y H:i" }}</small>
-                        </div>
-                        <div class="ticket-content mb-2">
-                            <p>{{ ticket.description }}</p>
-                            {% if ticket.image %}
-                            <img src="{{ ticket.image.url }}" alt="Image for {{ ticket.title }}" class="mt-2 rounded">
-                            {% endif %}
-                        </div>
-                        <div class="ticket-footer">
-                            <a href="{% url 'edit_ticket' ticket.id %}" class="text-blue-500 hover:underline mr-4">Modifier</a>
-                            <a href="{% url 'delete_ticket' ticket.id %}" class="text-red-500 hover:underline">Supprimer</a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-    
-                <div class="reviews-section mb-8">
-                    <h2 class="text-xl font-semibold mb-4">Critiques</h2>
-                    <!-- Exemple de boucle sur les critiques -->
-                    {% for review in reviews %}
-                    <div class="review bg-white p-4 rounded-lg shadow-md mb-4">
-                        <div class="review-header mb-2">
-                            <h3 class="text-lg font-bold">{{ review.headline }}</h3>
-                            <small class="text-gray-500">{{ review.time_created|date:"d M Y H:i" }}</small>
-                        </div>
-                        <div class="review-content mb-2">
-                            <p>{{ review.body }}</p>
-                            <p>Note: {{ review.rating }} / 5</p>
-                        </div>
-                        <div class="review-footer">
-                            <a href="{% url 'edit_review' review.id %}" class="text-blue-500 hover:underline mr-4">Modifier</a>
-                            <a href="{% url 'delete_review' review.id %}" class="text-red-500 hover:underline">Supprimer</a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-    
-            <div class="w-full md:w-1/3 px-2 mb-4">
-                <div class="subscriptions-section mb-8">
-                    <h2 class="text-xl font-semibold mb-4">Abonnements</h2>
-                    <!-- Exemple de boucle sur les abonnements -->
-                    {% for subscription in subscriptions %}
-                    <div class="subscription bg-white p-4 rounded-lg shadow-md mb-4">
-                        <p>{{ subscription.followed_user.username }}</p>
-                        <a href="{% url 'unsubscribe' subscription.id %}" class="text-red-500 hover:underline">Désabonner</a>
-                    </div>
-                    {% endfor %}
-                </div>
-    
-                <div class="followers-section">
-                    <h2 class="text-xl font-semibold mb-4">Abonnés</h2>
-                    <!-- Exemple de boucle sur les abonnés -->
-                    {% for follower in followers %}
-                    <div class="follower bg-white p-4 rounded-lg shadow-md mb-4">
-                        <p>{{ follower.user.username }}</p>
-                    </div>
-                    {% endfor %}
-                </div> {% endcomment %}
+
             </div>
         </div>
     </div>

@@ -92,99 +92,42 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// // comportement au clic de l'etoile (rating)
-// document.addEventListener('DOMContentLoaded', function () {
-// const labels = document.querySelectorAll('label');
+// mise en couleur des étoiles //
+// Sélectionner tous les labels des étoiles et les trier dans l'ordre inversé
+const starLabels = document.querySelectorAll('label[for^="star"]');
 
-// labels.forEach(label => {
-//     label.addEventListener('click', function () {
-//     // Désélectionne toutes les autres étoiles
-//     labels.forEach(l => l.classList.remove('text-blue-500'));
-//     // Sélectionne l'étoile cliquée
-//     this.classList.add('text-blue-500');
-//     });
-// });
-// });
+// Ajouter un écouteur d'événement à chaque label
+starLabels.forEach(label => {
+    label.addEventListener('click', function() {
+        const id = this.getAttribute('for'); // Récupérer l'ID de l'input associé
+        const radioInput = document.getElementById(id); // Sélectionner l'input radio correspondant
+
+        // Réinitialiser les couleurs de toutes les étoiles
+        starLabels.forEach(starLabel => {
+            starLabel.classList.remove('text-yellow-400');
+        });
+
+        // Mettre à jour la couleur des étoiles sélectionnées et inférieures
+        let foundSelected = false;
+        for (let i = starLabels.length - 1; i >= 0; i--) {
+            const starLabel = starLabels[i];
+            if (starLabel === this) {
+                foundSelected = true;
+            }
+            if (foundSelected) {
+                starLabel.classList.add('text-yellow-400');
+            }
+        }
+
+        // Cocher l'input radio correspondant
+        if (radioInput) {
+            radioInput.checked = true;
+        }
+    });
+});
 
 
-// // Sélection des étoiles et du conteneur
-// const stars = document.querySelectorAll('.star');
-// const starContainer = document.getElementById('star-container');
-
-// // Ajout des écouteurs d'événements pour chaque étoile
-// stars.forEach((star, index) => {
-//     star.addEventListener('mouseenter', () => {
-//         // Modifier la couleur des étoiles précédentes
-//         // console.log(stars)
-//         // console.log(starContainer)
-//         // console.log(index)
-//         for (let i = 0; i <= index; i++) {
-//             stars[i].classList.remove('text-gray-600');
-//             stars[i].classList.add('fill-yellow-400');
-//         }
-//     });
-
-//     star.addEventListener('mouseleave', () => {
-//         // Remettre la couleur d'origine des étoiles précédentes
-//         for (let i = 0; i <= index; i++) {
-//             stars[i].classList.remove('fill-yellow-400');
-//             stars[i].classList.add('text-gray-600'); //  --tw-text-opacity: 1;
-//         }
-//     });
-// });
-
-// // Récupération des éléments nécessaires
-// const starsContainer = document.getElementById('stars');
-// const stars = starsContainer.querySelectorAll('.star');
-// const scoreInput = document.getElementById('score');
-// const tooltip = document.getElementById('tooltip');
-
-// // Gestion du survol des étoiles
-// stars.forEach(star => {
-//     star.addEventListener('mouseenter', function() {
-//         const value = parseInt(star.getAttribute('data-value'));
-
-//         // Mettre à jour le tooltip
-//         tooltip.textContent = star.getAttribute('data-tooltip');
-//         tooltip.style.opacity = '1';
-
-//         // Mettre à jour la couleur de remplissage des étoiles
-//         stars.forEach(s => {
-//             const sValue = parseInt(s.getAttribute('data-value'));
-//             if (sValue <= value) {
-//                 s.querySelector('use').classList.add('fill-yellow-400');
-//             } else {
-//                 s.querySelector('use').classList.remove('fill-yellow-400');
-//             }
-//         });
-//     });
-
-//     star.addEventListener('mouseleave', function() {
-//         tooltip.style.opacity = '0';
-
-//         // Réinitialiser la couleur de remplissage des étoiles
-//         stars.forEach(s => {
-//             s.querySelector('use').classList.remove('fill-yellow-400');
-//         });
-//     });
-
-//     // Gestion du clic sur une étoile
-//     star.addEventListener('click', function() {
-//         const value = parseInt(star.getAttribute('data-value'));
-
-//         // Mettre à jour la valeur du score
-//         scoreInput.value = value;
-
-//         // Réinitialiser la couleur de remplissage des étoiles
-//         stars.forEach(s => {
-//             s.querySelector('use').classList.remove('fill-yellow-400');
-//         });
-
-//         // Cacher le tooltip après la sélection
-//         tooltip.style.opacity = '0';
-//     });
-// });
-
+// tooltips
 document.addEventListener('DOMContentLoaded', function () {
     var tooltipElements = document.querySelectorAll('[data-tooltip]');
     tooltipElements.forEach(function (element) {
@@ -215,7 +158,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // formulaire create_ticket : pour afficher le nom du fichier image une fois selectionné
-document.getElementById('id_image').onchange = function () {
-    var fileName = this.value.split('\\').pop();
-    document.getElementById('image-name').innerText = fileName ? 'Selected Image: ' + fileName : '';
-  };
+function displayFileName() {
+    const input = document.getElementById('image-upload');
+    const fileName = input.files[0].name;
+    document.getElementById('image-name').textContent = fileName;
+}

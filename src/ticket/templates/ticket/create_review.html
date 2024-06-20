@@ -11,7 +11,7 @@
             <h2 class="text-xl font-bold mb-2">Livre / Article</h2>
             {{ ticket_form.non_field_errors }}
             <div class="mb-4">
-                <label for="id_title" class="block text-sm font-medium text-gray-700">Titre</label>
+                <label for="id_title" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
                 <!-- Utilisation de la valeur du champ title sans afficher 'None' -->
                 <input type="text" name="title" id="id_title" value="{% if ticket_form.title.value %}{{ ticket_form.title.value }}{% endif %}" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 {% for error in ticket_form.title.errors %}
@@ -19,7 +19,7 @@
                 {% endfor %}
             </div>
             <div class="mb-4">
-                <label for="id_description" class="block text-sm font-medium text-gray-700">Description</label>
+                <label for="id_description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                 <!-- Utilisation de la valeur du champ description sans afficher 'None' -->
                 <textarea name="description" id="id_description" rows="4" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ ticket_form.description.value|default_if_none:"" }}</textarea>
                 {% for error in ticket_form.description.errors %}
@@ -38,52 +38,69 @@
 
         {% comment %} </form>
     </div> {% endcomment %}
-
     <!-- Section Critique -->
     {% comment %} <div class="mb-8">
         <form method="post" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold mb-2">Critique</h2>
             {{ review_form.non_field_errors }}
             {% csrf_token %}            {% endcomment %}
+            <h2 class="text-xl font-bold mb-2">Critique</h2>
             <div class="mb-4">
-                <label for="id_headline" class="block text-sm font-medium text-gray-700">Titre</label>
+                <label for="id_headline" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
                 <input type="text" name="headline" id="id_headline" value="{% if review_form.headline.value %}{{ review_form.headline.value }}{% endif %}" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 {% for error in review_form.headline.errors %}
                 <p class="text-red-500 text-sm">{{ error }}</p>
                 {% endfor %}
-            </div>    
-
-                <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Note</label>
-                <div class="flex items-center mt-2 space-x-2" id="star-container">
-                    <label for="star1" class="flex items-center" data-tooltip="Note 1">
-                        <input type="radio" id="star1" name="rating" value="1" {% if review_form.rating.value == 1 %}checked{% endif %}>
-                        1
-                    </label>
-                    <label for="star2" class="flex items-center" data-tooltip="Note 2">
-                        <input type="radio" id="star2" name="rating" value="2" {% if review_form.rating.value == 2 %}checked{% endif %}>
-                        2
-                    </label>
-                    <label for="star3" class="flex items-center" data-tooltip="Note 3">
-                        <input type="radio" id="star3" name="rating" value="3" {% if review_form.rating.value == 3 %}checked{% endif %}>
-                        3
-                    </label>
-                    <label for="star4" class="flex items-center" data-tooltip="Note 4">
-                        <input type="radio" id="star4" name="rating" value="4" {% if review_form.rating.value == 4 %}checked{% endif %}>
-                        4
-                    </label>
-                    <label for="star5" class="flex items-center" data-tooltip="Note 5">
-                        <input type="radio" id="star5" name="rating" value="5" {% if review_form.rating.value == 5 %}checked{% endif %}>
-                        5
-                    </label>
-                </div>
-                {% for error in review_form.rating.errors %}
-                <p class="text-red-500 text-sm">{{ error }}</p>
-                {% endfor %}
             </div>
 
+            <label class="block text-sm font-medium text-gray-700 mb-2">Note</label>
+            <div class="flex items-center space-x-2">
+                <input type="radio" id="star1" class="sr-only" name="rating" value="1" {% if review_form.rating.value == 1 %}checked{% endif %}>
+                <label for="star1" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+            
+                <input type="radio" id="star2" class="sr-only" name="rating" value="2" {% if review_form.rating.value == 2 %}checked{% endif %}>
+                <label for="star2" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+            
+                <input type="radio" id="star3" class="sr-only" name="rating" value="3" {% if review_form.rating.value == 3 %}checked{% endif %}>
+                <label for="star3" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+            
+                <input type="radio" id="star4" class="sr-only" name="rating" value="4" {% if review_form.rating.value == 4 %}checked{% endif %}>
+                <label for="star4" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+            
+                <input type="radio" id="star5" class="sr-only" name="rating" value="5" {% if review_form.rating.value == 5 %}checked{% endif %}>
+                <label for="star5" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+                {% for error in review_form.rating.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            
+            
+
+
+
+
             <div class="mb-4">
-                <label for="id_body" class="block text-sm font-medium text-gray-700 mb-1">Commentaire</label>
+                <label for="id_body" class="block text-sm font-medium text-gray-700 mb-2 mt-2">Commentaire</label>
                 <textarea name="body" id="id_body" rows="4" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ review_form.body.value|default_if_none:"" }}</textarea>
                 {% for error in review_form.body.errors %}
                 <p class="text-red-500 text-sm">{{ error }}</p>
