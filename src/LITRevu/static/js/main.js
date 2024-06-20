@@ -1,3 +1,5 @@
+// tooltip pour le formulaire de création de compte et les étoiles (rating)
+
 document.addEventListener('DOMContentLoaded', () => {
     // Affichage/masquage des tooltips
     function toggleTooltip(tooltipElement, show) {
@@ -10,29 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // initialisation des tooltips avec Popper.js
-    function initializeTooltip(element, tooltipElement, popperOptions = {}) {
+    function initializeTooltip(element, tooltipElement, placement, popperOptions = {}) {
         const defaultModifiers = [
-            {
-                name: 'offset',
-                options: {
-                    offset: [0, 8],
-                },
-            },
-            {
-                name: 'arrow',
-                options: {
-                    element: tooltipElement.querySelector('[data-popper-arrow]'),
-                },
-            },
-        ];
+            { name: 'offset', options: { offset: [0, 8] } },
+            { name: 'arrow', options: { element: tooltipElement.querySelector('[data-popper-arrow]') } }
+            ];
 
         const modifiers = popperOptions.modifiers ? defaultModifiers.concat(popperOptions.modifiers) : defaultModifiers;
 
         const popperInstance = Popper.createPopper(element, tooltipElement, {
-            placement: 'right',
+            placement: placement,
             modifiers: modifiers,
-        });
+            });
 
         element.addEventListener('mouseenter', () => {
             toggleTooltip(tooltipElement, true);
@@ -44,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialisation des tooltips pour les champs de saisie
+    // Initialisation pour les champs de saisie
     function initializeFieldTooltips() {
         const fields = document.querySelectorAll('input');
         fields.forEach((field) => {
@@ -52,43 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const tooltipElement = document.getElementById(tooltipId);
 
             if (tooltipElement) {
-                initializeTooltip(field, tooltipElement);
+                initializeTooltip(field, tooltipElement, 'right');
             }
         });
     }
 
+    // Initialisation pour les étoiles (rating)
+    function initializeStarTooltips() {
+        const starLabels = document.querySelectorAll('label[for^="star"]');
+        starLabels.forEach((label, index) => {
+            const tooltipId = 'tooltip-star' + (index + 1);
+            const tooltipElement = document.getElementById(tooltipId);
 
-
-    // // Initialisation des tooltips pour les étoiles (rating)
-    // function initializeStarTooltips() {
-    //     const stars = document.querySelectorAll('.star');
-    //     const tooltip = document.querySelector('.tooltip');
-
-    //     stars.forEach((star) => {
-    //         star.addEventListener('mouseenter', () => {
-    //             const tooltipText = star.getAttribute('data-tooltip');
-    //             tooltip.textContent = tooltipText;
-    //             toggleTooltip(tooltip, true);
-    //         });
-
-    //         star.addEventListener('mouseleave', () => {
-    //             toggleTooltip(tooltip, false);
-    //         });
-
-    //         initializeTooltip(star, tooltip, {
-    //             modifiers: [
-    //                 {
-    //                     name: 'eventListeners',
-    //                     enabled: false,
-    //                 },
-    //             ],
-    //         });
-    //     });
-    // }
+            if (tooltipElement) {
+                initializeTooltip(label, tooltipElement, 'top');
+            }
+        });
+    }
 
     initializeFieldTooltips();
-    // initializeStarTooltips();
-
+    initializeStarTooltips();
 });
 
 
@@ -127,36 +101,23 @@ starLabels.forEach(label => {
 });
 
 
-// tooltips
-document.addEventListener('DOMContentLoaded', function () {
-    var tooltipElements = document.querySelectorAll('[data-tooltip]');
-    tooltipElements.forEach(function (element) {
-        var tooltipText = element.getAttribute('data-tooltip');
-        var tooltip = document.createElement('div');
-        tooltip.className = 'tooltip bg-black text-white text-xs rounded py-1 px-2 hidden absolute z-50';
-        tooltip.innerText = tooltipText;
-        document.body.appendChild(tooltip);
-        
-        Popper.createPopper(element, tooltip, {
-            placement: 'top',
-            modifiers: [{
-                name: 'offset',
-                options: {
-                    offset: [0, 8],
-                },
-            }],
-        });
+// tooltips pour les étoiles
+document.addEventListener('DOMContentLoaded', () => {
+    // Affichage/masquage des tooltips
+    function toggleTooltip(tooltipElement, show) {
+        if (show) {
+            tooltipElement.classList.remove('hidden', 'opacity-0');
+            tooltipElement.classList.add('block', 'opacity-100');
+        } else {
+            tooltipElement.classList.remove('block', 'opacity-100');
+            tooltipElement.classList.add('hidden', 'opacity-0');
+        }
+    }
 
-        element.addEventListener('mouseenter', function () {
-            tooltip.classList.remove('hidden');
-        });
 
-        element.addEventListener('mouseleave', function () {
-            tooltip.classList.add('hidden');
-        });
-    });
+
+
 });
-
 // formulaire create_ticket : pour afficher le nom du fichier image une fois selectionné
 function displayFileName() {
     const input = document.getElementById('image-upload');
