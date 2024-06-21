@@ -1,10 +1,19 @@
+from itertools import chain
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Value, CharField
+# from django.urls import reverse_lazy
 
-from .forms import Ticket, TicketForm, ReviewForm, FollowerForm, DeleteTicketForm
+from .forms import TicketForm, ReviewForm, FollowerForm, DeleteTicketForm  # Ticket, Review, 
 from authentication.models import CustomUser
-from .models import UserFollows
+from .models import UserFollows, Ticket, Review
+
+# pour debug
+import logging
+logger = logging.getLogger(__name__)
+#####
 
 
 @login_required
@@ -20,35 +29,49 @@ def flux(request):
 
 @login_required
 def posts(request):
-    tickets = Ticket.objects.filter(user=request.user).order_by('-time_created')
-    return render(request, 'ticket/posts.html', {'tickets': tickets})
+
+    # on récupère les tickets et reviews de l'utilisateur, auquel on ajoute un "tag" pour les distinguer
+    tickets = Ticket.objects.filter(user=request.user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    reviews = Review.objects.filter(user=request.user)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    # on regroupe les deux listes en une, que l'on trie par date antéchronologique
+    posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
+
+    return render(request, 'ticket/posts.html', context={'posts': posts})
 
 
 @login_required
 def ticket_edit(request, ticket_id):
     # https://docs.djangoproject.com/fr/5.0/topics/http/shortcuts/
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    edit_form = TicketForm(instance=ticket)
-    delete_form = DeleteTicketForm()
+    # logger.debug(f"Editing ticket with ID: {ticket.id}")
+    print(f"Editing ticket with ID: {ticket.id}")
+    # edit_form = TicketForm(instance=ticket)
     if request.method == 'POST':
-        pass
-    context = {
-        'edit_form': edit_form,
-        'delete_form': delete_form,
-    }
-    return render(request, 'ticket/home.html',  context=context)
+        edit_form = TicketForm(request.POST, request.FILES, instance=ticket)
+        if edit_form.is_valid():
+            edit_form.save()
+            return redirect('posts')
+    else:
+        edit_form = TicketForm(instance=ticket)
 
-
-
+    return render(request, 'ticket/edit_ticket.html',  {'edit_form': edit_form})
 
 @login_required
-def ticket_delete(request, pk):
-    ticket = get_object_or_404(Ticket, pk=pk)
+def ticket_delete(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
     if request.method == 'POST':
         form = DeleteTicketForm(request.POST)
         if form.is_valid() and form.cleaned_data['delete_ticket']:
             ticket.delete()
+            # print("Effacé !! ou presque...")
+            messages.success(request, f"Ticket {ticket.title} effacé.")
             return redirect('posts')
+        else:
+            messages.error(request, "Erreur lors de la suppression.")
+    # return redirect(reverse_lazy('posts'))
     return redirect('posts')
 
 
@@ -101,6 +124,20 @@ def create_review(request):
         'ticket_form': ticket_form,
         'review_form': review_form,
     })
+
+
+
+@login_required
+def review_edit(request):
+    return render(request, 'ticket/home.html')
+
+
+@login_required
+def review_delete(request):
+    return render(request, 'ticket/home.html')
+
+
+
 
 
 @login_required

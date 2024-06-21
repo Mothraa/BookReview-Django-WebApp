@@ -24,7 +24,7 @@ class DeleteTicketForm(forms.Form):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['rating', 'headline', 'body', 'ticket'] # , 
+        fields = ['rating', 'headline', 'body', 'ticket']
         exclude = ['ticket']
 
 

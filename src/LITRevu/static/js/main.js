@@ -124,3 +124,25 @@ function displayFileName() {
     const fileName = input.files[0].name;
     document.getElementById('image-name').textContent = fileName;
 }
+
+
+// modal de suppression d'un ticket
+function openModal(ticket_id) {
+    const modal = document.getElementById('deleteModal');
+    const form = document.getElementById('deleteForm');
+    form.action = `/ticket/${ticket_id}/delete/`;
+    modal.classList.remove('hidden');
+}
+
+function closeModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.classList.add('hidden');
+}
+
+// fermeture du modal lors du click a l'exterieur
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+        modal.classList.add('hidden');
+    }
+});

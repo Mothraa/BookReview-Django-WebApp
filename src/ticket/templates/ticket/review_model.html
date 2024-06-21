@@ -1,0 +1,36 @@
+<div class="bg-white p-6 rounded-lg shadow-md mb-4">
+    {% if post.user == request.user %}
+        <p>Vous avez publié une critique</p>
+    {% else %}
+        <p>Critique publié par {{ post.user.nickname }}</p>
+    {% endif %}
+    <p class="text-right">{{ post.time_created|date:"H:i, j F Y" }}</p>
+    <h2 class="font-semibold">{{ post.headline }}</h2>
+
+    <p class="mt-2">{{ post.body }}</p>
+    <div>
+        <p>Rating: {{ post.rating }}</p>
+    </div>
+
+    <div class="flex justify-end">
+        <a href="{% url 'edit_review' post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
+        {% include 'ticket/delete_review.html' %}
+        <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
+    </div>
+    {% comment %} a refacto pour utiliser le ticket_model mais sans les boutons, pb également a l'affichage des champs {% endcomment %}
+    {% comment %} {% include 'ticket/ticket_model.html' with ticket=post.ticket %} {% endcomment %}
+    {% if post.ticket %}
+    <div class= "text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700 p-4 mt-4 mb-2">
+        <p>Vous avez publié un ticket</p>
+        <p class="text-right">{{ post.ticket.time_created|date:"H:i, j F Y" }}</p>
+        <h2 class="font-semibold">{{ post.ticket.title }}</h2>
+
+        <p class="mt-2">{{ post.ticket.description }}</p>
+        {% if post.ticket.image %}
+            <img class="mt-4" src="{{ post.ticket.image.url }}" alt="Image du ticket">
+        {% endif %}
+    </div>
+{% endif %}
+
+</div>
+

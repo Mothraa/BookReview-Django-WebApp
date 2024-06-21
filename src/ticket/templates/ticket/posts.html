@@ -3,45 +3,21 @@
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4 text-center">Vos Posts</h1>
 </div>
-    
-{% for ticket in tickets %}
-    <div class="bg-white p-6 rounded-lg shadow-md mb-4">
-        <p>Vous avez publié un ticket</p>
-        <p class="text-right">{{ ticket.time_created|date:"H:i, j F Y" }}</p>
-        <h2 class="font-semibold">{{ ticket.title }}</h2>
 
-        <p class="mt-2">{{ ticket.description }}</p>
-        {% comment %} TODO : ajouter un bouton voir plus si la description est longue {% endcomment %}
-        {% if ticket.image %}
-            <img class="mt-4" src="{{ ticket.image.url }}" alt="Image du ticket">
-        {% endif %}
-        
-        {% comment %} <p>Utilisateur :{{ ticket.user.nickname }}</p> {% endcomment %}
-        
-
-
-
-        <div class="flex justify-end">
-            <a href="{% url 'ticket_edit' ticket.pk %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
-            <button onclick="openModal({{ ticket.pk }})" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
-        </div>
-    </div>
+{% for post in posts %}
+    {% if post.content_type == 'REVIEW' %}
+        {% include 'ticket/review_model.html' %}
+    {% elif post.content_type == 'TICKET' %}
+        {% include 'ticket/ticket_model.html' %}
+    {% endif %}
+{% empty %}
+    <p>Aucun post publié.</p>
 {% endfor %}
-
-<!-- Modal -->
-<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-md w-1/3 min-w-[300px]">
-        <h2 class="text-xl font-bold mb-4">Confirmez la suppression</h2>
-        <form id="deleteForm" method="post" class="w-full">
-            {% csrf_token %}
-            <input type="hidden" name="delete_ticket" value="true">
-            <div class="flex justify-end mt-4 w-full">
-                <button type="submit" class="btn btn-danger bg-red-700 text-white py-2 px-4 rounded hover:bg-red-800 mr-2">Supprimer</button>
-                <button type="button" onclick="closeModal()" class="btn btn-secondary bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 mr-2">Annuler</button>
-
-            </div>
-        </form>
-    </div>
-</div>
+        {% comment %} {% for post in posts %}
+            {% if post.content_type == 'TICKET' %}
+            {% include 'ticket_snippet.html' %}
+            {% elif post.content_type == 'REVIEW' %}
+            {% include 'review_snippet.html' %}
+        {% endfor %} {% endcomment %}
 
 {% endblock content %}

@@ -49,7 +49,7 @@ def save(self, *args, **kwargs):
 def create_thumb(image, size):
     """Returns the image resized to fit inside a box of the given size"""
     image.thumbnail(size, Image.LANCZOS)
-    print("toto")
+    # print("toto")
     temp = BytesIO()#StringIO()
     image.save(temp, 'jpeg')
     temp.seek(0)

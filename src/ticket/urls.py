@@ -10,6 +10,8 @@ from ticket.views import (home,
                           remove_subscription,
                           ticket_edit,
                           ticket_delete,
+                          review_edit,
+                          review_delete,
                           )
 
 urlpatterns = [
@@ -27,8 +29,10 @@ urlpatterns = [
 
 
     path('posts/', posts, name='posts'),
-    path('tickets/<int:ticket_id>/edit/', ticket_edit, name='ticket_edit'),
-    path('tickets/<int:ticket_id>/delete/', ticket_delete, name='ticket_delete'),
+    path('ticket/<int:ticket_id>/edit/', ticket_edit, name='edit_ticket'),
+    path('ticket/<int:ticket_id>/delete/', ticket_delete, name='delete_ticket'),
+    path('review/<int:ticket_id>/edit/', review_edit, name='edit_review'),
+    path('review/<int:ticket_id>/delete/', review_delete, name='delete_review'),
     path('subscription/', subscription, name='subscription'),
     path('subscription/remove/<int:subscription_id>/', remove_subscription, name='remove_subscription'),
 ]
