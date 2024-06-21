@@ -12,11 +12,6 @@
         <p>Rating: {{ post.rating }}</p>
     </div>
 
-    <div class="flex justify-end">
-        <a href="{% url 'edit_review' post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
-        {% include 'ticket/delete_review.html' %}
-        <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
-    </div>
     {% comment %} a refacto pour utiliser le ticket_model mais sans les boutons, pb également a l'affichage des champs {% endcomment %}
     {% comment %} {% include 'ticket/ticket_model.html' with ticket=post.ticket %} {% endcomment %}
     {% if post.ticket %}
@@ -29,6 +24,11 @@
         {% if post.ticket.image %}
             <img class="mt-4" src="{{ post.ticket.image.url }}" alt="Image du ticket">
         {% endif %}
+    </div>
+    <div class="flex justify-end">
+        <a href="{% url 'edit_review' post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
+        {% include 'ticket/delete_review.html' %}
+        <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
     </div>
 {% endif %}
 
