@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import Ticket, TicketForm, ReviewForm, FollowerForm
+from .forms import Ticket, TicketForm, ReviewForm, FollowerForm, DeleteTicketForm
 from authentication.models import CustomUser
 from .models import UserFollows
 
@@ -26,22 +26,31 @@ def posts(request):
 
 @login_required
 def ticket_edit(request, ticket_id):
-    pass
-    # try:
-    #     subscription = UserFollows.objects.get(id=subscription_id, user=request.user)
-    #     followed_user_nickname = subscription.followed_user.nickname
-    #     subscription.delete()
-    #     # TODO ajouter le nom de l'utilisateur
-    #     messages.success(request, f"Abonnement à {followed_user_nickname} supprimé.")
-    # except UserFollows.DoesNotExist:
-    #     messages.error(request, "Vous ne suivez pas cet utilisateur.")
+    # https://docs.djangoproject.com/fr/5.0/topics/http/shortcuts/
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    edit_form = TicketForm(instance=ticket)
+    delete_form = DeleteTicketForm()
+    if request.method == 'POST':
+        pass
+    context = {
+        'edit_form': edit_form,
+        'delete_form': delete_form,
+    }
+    return render(request, 'ticket/home.html',  context=context)
 
-    return render(request, 'ticket/home.html')
+
+
 
 @login_required
-def ticket_delete(request, ticket_id):
-    pass
-    return render(request, 'ticket/home.html')
+def ticket_delete(request, pk):
+    ticket = get_object_or_404(Ticket, pk=pk)
+    if request.method == 'POST':
+        form = DeleteTicketForm(request.POST)
+        if form.is_valid() and form.cleaned_data['delete_ticket']:
+            ticket.delete()
+            return redirect('posts')
+    return redirect('posts')
+
 
 
 @login_required

@@ -22,10 +22,26 @@
 
 
         <div class="flex justify-end">
-            <a href="{% url 'ticket_edit' ticket.pk %}" class="btn btn-primary bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
-            <a href="{% url 'ticket_delete' ticket.pk %}" class="btn btn-danger bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</a>
+            <a href="{% url 'ticket_edit' ticket.pk %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
+            <button onclick="openModal({{ ticket.pk }})" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
         </div>
     </div>
 {% endfor %}
+
+<!-- Modal -->
+<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-md w-1/3 min-w-[300px]">
+        <h2 class="text-xl font-bold mb-4">Confirmez la suppression</h2>
+        <form id="deleteForm" method="post" class="w-full">
+            {% csrf_token %}
+            <input type="hidden" name="delete_ticket" value="true">
+            <div class="flex justify-end mt-4 w-full">
+                <button type="submit" class="btn btn-danger bg-red-700 text-white py-2 px-4 rounded hover:bg-red-800 mr-2">Supprimer</button>
+                <button type="button" onclick="closeModal()" class="btn btn-secondary bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 mr-2">Annuler</button>
+
+            </div>
+        </form>
+    </div>
+</div>
 
 {% endblock content %}
