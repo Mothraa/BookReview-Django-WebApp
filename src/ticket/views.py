@@ -59,6 +59,7 @@ def ticket_edit(request, ticket_id):
 
     return render(request, 'ticket/edit_ticket.html',  {'edit_form': edit_form})
 
+
 @login_required
 def ticket_delete(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
@@ -75,17 +76,26 @@ def ticket_delete(request, ticket_id):
     return redirect('posts')
 
 
-
 @login_required
 def create_ticket(request):
     if request.method == 'POST':
         form = TicketForm(request.POST, request.FILES)
+
         if form.is_valid():
+            print("form is valid")
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
             return redirect('flux')
+        else:
+            print("Ticket form errors:", form.errors)
+            messages.error(
+                request,
+                "Erreur lors de la création du ticket.\
+                Si l'erreur persiste veuillez prendre contact avec votre administrateur."
+            )
     else:
+        # print("Ticket form errors:", form.errors)
         form = TicketForm()
     return render(request, 'ticket/create_ticket.html', {'form': form})
 

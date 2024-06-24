@@ -10,11 +10,15 @@ from .models import Ticket, Review, UserFollows
 
 
 class TicketForm(forms.ModelForm):
-    edit_ticket = forms.BooleanField(widget=forms.HiddenInput, initial=True)
+    # edit_ticket = forms.BooleanField(widget=forms.HiddenInput, initial=True)
 
     class Meta:
         model = Ticket
         fields = ['title', 'description', 'image']
+
+
+class EditTicketForm(TicketForm):
+    edit_ticket = forms.BooleanField(widget=forms.HiddenInput, initial=True)
 
 
 class DeleteTicketForm(forms.Form):
