@@ -14,12 +14,13 @@
     {% endif %}
     
     {% comment %} <p>Utilisateur :{{ ticket.user.nickname }}</p> {% endcomment %}
-    
-
+    {% if post.user == request.user %}
         <div class="flex justify-end">
             <a href="{% url 'edit_ticket' post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
             {% include 'ticket/delete_ticket.html' %}
             <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
         </div>
-    </div>
+    {% endif %}
+
+
 </div>

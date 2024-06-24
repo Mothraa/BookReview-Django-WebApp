@@ -14,16 +14,16 @@
             <div class="mb-4">
                 <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
                 <input type="text" name="title" id="title" value="{% if form.title.value %}{{ form.title.value }}{% endif %}" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                {% if form.title.errors %}
-                    <p class="text-red-500 text-xs italic">{{ form.title.errors }}</p>
-                {% endif %}
+                {% for error in inform.title.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
             </div>
             <div class="mb-4">
                 <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                 <textarea name="description" id="description" rows="4" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{% if form.description.value %}{{ form.description.value }}{% endif %}</textarea>
-                {% if form.description.errors %}
-                    <p class="text-red-500 text-xs italic">{{ form.description.errors }}</p>
-                {% endif %}
+                {% for error in form.description.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
             </div>
             <div class="mb-4">
                 <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
@@ -36,9 +36,9 @@
                     </div>
                     <input type="file" name="image" id="image-upload" class="sr-only" onchange="displayFileName()" accept="image/jpeg, image/png, image/gif, image/webp">
                 </div>
-                {% if form.image.errors %}
-                    <p class="text-red-500 text-xs italic">{{ form.image.errors }}</p>
-                {% endif %}
+                {% for error in form.image.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
             </div>
 
             <div class="flex justify-end">

@@ -76,12 +76,13 @@ starLabels.forEach(label => {
         const id = this.getAttribute('for'); // Récupérer l'ID de l'input associé
         const radioInput = document.getElementById(id); // Sélectionner l'input radio correspondant
 
-        // Réinitialiser les couleurs de toutes les étoiles
+        // Réinitialise la couleur de toutes les étoiles
         starLabels.forEach(starLabel => {
             starLabel.classList.remove('text-yellow-400');
         });
-
-        // Mettre à jour la couleur des étoiles sélectionnées et inférieures
+        console.log(id)
+        console.log(starLabels.length)
+        // Met à jour la couleur des étoiles sélectionnées et inférieures
         let foundSelected = false;
         for (let i = starLabels.length - 1; i >= 0; i--) {
             const starLabel = starLabels[i];
@@ -90,10 +91,11 @@ starLabels.forEach(label => {
             }
             if (foundSelected) {
                 starLabel.classList.add('text-yellow-400');
+                starLabel.classList.add('scale-125');
             }
         }
 
-        // Cocher l'input radio correspondant
+        // coche le bouton radio
         if (radioInput) {
             radioInput.checked = true;
         }

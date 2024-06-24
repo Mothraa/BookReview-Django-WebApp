@@ -1,3 +1,4 @@
+{% load static %}
 <div class="bg-white p-6 rounded-lg shadow-md mb-4">
     {% if post.user == request.user %}
         <p>Vous avez publié une critique</p>
@@ -8,9 +9,26 @@
     <h2 class="font-semibold">{{ post.headline }}</h2>
 
     <p class="mt-2">{{ post.body }}</p>
-    <div>
-        <p>Rating: {{ post.rating }}</p>
+    {% if post.rating %}
+    <div class="flex items-center">
+        {% comment %} <p class="mr-2">Note: {{ post.rating }}</p> {% endcomment %}
+        {% for i in '12345' %}
+            {% if i|add:0 <= post.rating %}
+                <label class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors text-yellow-400" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+            {% else %}
+                <label class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+            {% endif %}
+        {% endfor %}
     </div>
+    {% endif %}
 
     {% comment %} a refacto pour utiliser le ticket_model mais sans les boutons, pb également a l'affichage des champs {% endcomment %}
     {% comment %} {% include 'ticket/ticket_model.html' with ticket=post.ticket %} {% endcomment %}
@@ -25,11 +43,13 @@
             <img class="mt-4" src="{{ post.ticket.image.url }}" alt="Image du ticket">
         {% endif %}
     </div>
-    <div class="flex justify-end">
-        <a href="{% url 'edit_review' post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
-        {% include 'ticket/delete_review.html' %}
-        <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
-    </div>
+    {% if post.user == request.user %}
+        <div class="flex justify-end">
+            <a href="{% url 'edit_review' post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
+            {% include 'ticket/delete_review.html' %}
+            <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
+        </div>
+    {% endif %}
 {% endif %}
 
 </div>
