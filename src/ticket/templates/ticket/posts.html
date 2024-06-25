@@ -1,23 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4 text-center">Vos Posts</h1>
-</div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4 text-center">Vos Posts</h1>
+    </div>
 
-{% for post in posts %}
-    {% if post.content_type == 'REVIEW' %}
-        {% include 'ticket/review_model.html' %}
-    {% elif post.content_type == 'TICKET' %}
-        {% include 'ticket/ticket_model.html' %}
-    {% endif %}
-{% empty %}
-    <p>Aucun post publié.</p>
-{% endfor %}
-        {% comment %} {% for post in posts %}
-            {% if post.content_type == 'TICKET' %}
-            {% include 'ticket_snippet.html' %}
-            {% elif post.content_type == 'REVIEW' %}
-            {% include 'review_snippet.html' %}
-        {% endfor %} {% endcomment %}
+    {% for post in posts %}
+        {% if post.content_type == 'REVIEW' %}
+            {% include 'ticket/review_model.html' %}
+        {% elif post.content_type == 'TICKET' %}
+            {% include 'ticket/ticket_model.html' %}
+        {% endif %}
 
+    {% empty %}
+        <p>Aucun post publié.</p>
+    {% endfor %}
+    {% include 'ticket/pagination.html' with page_obj=posts %}
 {% endblock content %}

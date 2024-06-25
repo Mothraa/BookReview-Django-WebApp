@@ -6,34 +6,35 @@
         <p>Critique publié par {{ post.user.nickname }}</p>
     {% endif %}
     <p class="text-right">{{ post.time_created|date:"H:i, j F Y" }}</p>
-    <h2 class="font-semibold">{{ post.headline }}</h2>
-
-    <p class="mt-2">{{ post.body }}</p>
-    {% if post.rating %}
     <div class="flex items-center">
-        {% comment %} <p class="mr-2">Note: {{ post.rating }}</p> {% endcomment %}
-        {% for i in '12345' %}
-            {% if i|add:0 <= post.rating %}
-                <label class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
-                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors text-yellow-400" viewBox="0 0 24 24">
-                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
-                    </svg>
-                </label>
-            {% else %}
-                <label class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
-                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
-                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
-                    </svg>
-                </label>
-            {% endif %}
-        {% endfor %}
+        <h2 class="font-semibold mr-2">{{ post.headline }}</h2>
+        {% if post.rating %}
+        <div class="flex items-center">
+            {% comment %} <p class="mr-2">Note: {{ post.rating }}</p> {% endcomment %}
+            {% for i in '12345' %}
+                {% if i|add:0 <= post.rating %}
+                    <label class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                        <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors text-yellow-400" viewBox="0 0 24 24">
+                            <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                        </svg>
+                    </label>
+                {% else %}
+                    <label class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                        <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                            <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                        </svg>
+                    </label>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
+    <p class="mt-2">{{ post.body }}</p>
 
     {% comment %} a refacto pour utiliser le ticket_model mais sans les boutons, pb également a l'affichage des champs {% endcomment %}
     {% comment %} {% include 'ticket/ticket_model.html' with ticket=post.ticket %} {% endcomment %}
     {% if post.ticket %}
-    <div class= "text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700 p-4 mt-4 mb-2">
+    <div class="text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700 p-4 mt-4 mb-2">
         <p>Vous avez publié un ticket</p>
         <p class="text-right">{{ post.ticket.time_created|date:"H:i, j F Y" }}</p>
         <h2 class="font-semibold">{{ post.ticket.title }}</h2>
@@ -50,7 +51,5 @@
             <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
         </div>
     {% endif %}
-{% endif %}
-
+    {% endif %}
 </div>
-

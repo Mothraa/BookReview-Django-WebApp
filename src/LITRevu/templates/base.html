@@ -32,14 +32,14 @@
             {% endif %}
         </h1>
         {% if user.is_authenticated %}
-        <div class="w-full md:w-auto flex flex-col-reverse md:flex-row md:items-center md:space-x-24">
+        <div class="w-full md:w-auto flex flex-col-reverse md:flex-row md:items-center justify-center md:space-x-24">
             <div class="flex flex-col items-center md:flex-row space-y-4 md:space-y-0 md:space-x-12 order-2 md:order-1 mt-2 md:mt-0">
                 <a href="{% url 'flux' %}"
-                    class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center">Flux</a>
+                    class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center ">Flux</a>
                 <a href="{% url 'posts' %}"
-                    class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center">Posts</a>
+                    class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center items-center">Posts</a>
                 <a href="{% url 'subscription' %}"
-                    class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center">Abonnements</a>
+                    class="text-green-700 hover:bg-green-700 hover:text-white active:bg-green-800 rounded-md px-4 py-2 text-center items-center">Abonnements</a>
             </div>
             <div class="flex flex-col items-end order-1 md:order-2 mb-2 md:mb-0">
                 <p><strong>{{ request.user }}</strong></p>

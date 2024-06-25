@@ -1,9 +1,12 @@
 from itertools import chain
+from functools import wraps
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Value, CharField
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
 # from django.urls import reverse_lazy
 
 from .forms import TicketForm, ReviewForm, FollowerForm, DeleteTicketForm  # Ticket, Review, 
@@ -11,9 +14,33 @@ from authentication.models import CustomUser
 from .models import UserFollows, Ticket, Review
 
 # pour debug
-import logging
-logger = logging.getLogger(__name__)
+# import logging
+# logger = logging.getLogger(__name__)
 #####
+
+
+# def custom_pagination(queryset_name, context_name):
+#     def decorator(view_func):
+#         @wraps(view_func)
+#         def wrapper(request, *args, **kwargs):
+#             response = view_func(request, *args, **kwargs)
+
+#             if isinstance(response, dict):
+#                 queryset = response.get(queryset_name)
+#                 if queryset:
+#                     paginator = Paginator(queryset, settings.NB_ITEM_PAGINATOR)
+#                     page_number = request.GET.get('page')
+#                     try:
+#                         paginated_queryset = paginator.page(page_number)
+#                     except PageNotAnInteger:
+#                         paginated_queryset = paginator.page(1)
+#                     except EmptyPage:
+#                         paginated_queryset = paginator.page(paginator.num_pages)
+
+#                     response[context_name] = paginated_queryset
+#             return response
+#         return wrapper
+#     return decorator
 
 
 @login_required
@@ -21,12 +48,23 @@ def home(request):
     return render(request, 'ticket/home.html')
 
 
+# @custom_pagination('tickets', 'tickets')
 @login_required
 def flux(request):
     tickets = Ticket.objects.all()
-    return render(request, 'ticket/flux.html', context={'tickets': tickets})
+
+    paginator = Paginator(tickets, settings.NB_ITEM_PAGINATOR)
+    page_number = request.GET.get('page')
+    try:
+        paginated_tickets = paginator.page(page_number)
+    except PageNotAnInteger:
+        paginated_tickets = paginator.page(1)
+    except EmptyPage:
+        paginated_tickets = paginator.page(paginator.num_pages)
+    return render(request, 'ticket/flux.html', context={'tickets': paginated_tickets})
 
 
+# @custom_pagination('posts', 'posts')
 @login_required
 def posts(request):
 
@@ -35,11 +73,31 @@ def posts(request):
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
     reviews = Review.objects.filter(user=request.user)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
-
     # on regroupe les deux listes en une, que l'on trie par date antéchronologique
     posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
-    return render(request, 'ticket/posts.html', context={'posts': posts})
+    # on regarde pour chaque post si l'utilisateur y a déjà répondu ou pas
+    user_reply = {
+        post.id: post.ticket and Review.objects.filter(ticket=post.ticket, user=request.user).exists()
+        for post in posts if hasattr(post, 'ticket')
+    }
+
+    paginator = Paginator(posts, settings.NB_ITEM_PAGINATOR)
+    page_number = request.GET.get('page')
+    try:
+        paginated_posts = paginator.page(page_number)
+    except PageNotAnInteger:
+        paginated_posts = paginator.page(1)
+    except EmptyPage:
+        paginated_posts = paginator.page(paginator.num_pages)
+
+    return render(request, 'ticket/posts.html', context={'posts': paginated_posts, 'user_reply': user_reply})
+
+
+@login_required
+def review_reply(request):
+    pass
+    return render(request, 'ticket/posts.html')
 
 
 @login_required
@@ -62,16 +120,16 @@ def ticket_edit(request, ticket_id):
 
 @login_required
 def ticket_delete(request, ticket_id):
-    ticket = get_object_or_404(Ticket, id=ticket_id)
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
     if request.method == 'POST':
         form = DeleteTicketForm(request.POST)
         if form.is_valid() and form.cleaned_data['delete_ticket']:
             ticket.delete()
             # print("Effacé !! ou presque...")
-            messages.success(request, f"Ticket {ticket.title} effacé.")
+            messages.success(request, f"Ticket {ticket.title} supprimé.")
             return redirect('posts')
         else:
-            messages.error(request, "Erreur lors de la suppression.")
+            messages.error(request, "Erreur de suppression.")
     # return redirect(reverse_lazy('posts'))
     return redirect('posts')
 
@@ -86,6 +144,7 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
+            messages.success(request, f"Ticket {ticket.title} créé avec succès.")
             return redirect('flux')
         else:
             print("Ticket form errors:", form.errors)

@@ -155,3 +155,5 @@ NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 # pour le redimensionnement des images en "thumbnails"
 IMAGE_MAX_SIZE = (800, 600)
 THUMB_MAX_SIZE = (300, 300)
+
+NB_ITEM_PAGINATOR = 5

@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-
+    {% include 'ticket/pagination.html' with page_obj=tickets %}
         {% comment %} {% for post in posts %}
             {% if post.content_type == 'TICKET' %}
             {% include 'ticket_snippet.html' %}
