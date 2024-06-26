@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4 text-center">Créer une critique</h1>
+    <!-- Section Livre / Article -->
+    <div class="mb-8">
+        <form method="post" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
+            {% csrf_token %}
+            <h2 class="text-xl font-bold mb-2">Livre / Article</h2>
+            {{ ticket_form.non_field_errors }}
+            <div class="mb-4">
+                <label for="id_title" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
+                <!-- Utilisation de la valeur du champ title sans afficher 'None' -->
+                <input type="text" name="title" id="id_title" value="{% if ticket_form.title.value %}{{ ticket_form.title.value }}{% endif %}" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                {% for error in ticket_form.title.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="mb-4">
+                <label for="id_description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <!-- Utilisation de la valeur du champ description sans afficher 'None' -->
+                <textarea name="description" id="id_description" rows="4" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ ticket_form.description.value|default_if_none:"" }}</textarea>
+                {% for error in ticket_form.description.errors %}
+                <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="mb-4">
+                <label for="id_image" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">
+                    <span>Télécharger fichier</span>
+                    <input type="file" name="image" id="id_image" class="sr-only">
+                </label>
+                {% for error in ticket_form.image.errors %}
+                <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+        {% comment %} </form>
+    </div> {% endcomment %}
+    <!-- Section Critique -->
+    {% comment %} <div class="mb-8">
+        <form method="post" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-2">Critique</h2>
+            {{ review_form.non_field_errors }}
+            {% csrf_token %}            {% endcomment %}
+            <h2 class="text-xl font-bold mb-2">Critique</h2>
+            <div class="mb-4">
+                <label for="id_headline" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
+                <input type="text" name="headline" id="id_headline" value="{% if review_form.headline.value %}{{ review_form.headline.value }}{% endif %}" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                {% for error in review_form.headline.errors %}
+                <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Note</label>
+            <div class="flex items-center space-x-1.5">
+                <input type="radio" id="star1" class="sr-only" name="rating" value="1" {% if review_form.rating.value == 1 %}checked{% endif %}>
+                <label for="star1" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+                <div id="tooltip-star1" class="absolute z-10 hidden opacity-0 px-3 py-2 text-sm font-medium text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700">Je n'aime pas</div>
+            
+                <input type="radio" id="star2" class="sr-only" name="rating" value="2" {% if review_form.rating.value == 2 %}checked{% endif %}>
+                <label for="star2" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+                <div id="tooltip-star2" class="absolute z-10 hidden opacity-0 px-3 py-2 text-sm font-medium text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700">Boff...</div>
+            
+                <input type="radio" id="star3" class="sr-only" name="rating" value="3" {% if review_form.rating.value == 3 %}checked{% endif %}>
+                <label for="star3" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+                <div id="tooltip-star3" class="absolute z-10 hidden opacity-0 px-3 py-2 text-sm font-medium text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700">Pas mal</div>
+            
+                <input type="radio" id="star4" class="sr-only" name="rating" value="4" {% if review_form.rating.value == 4 %}checked{% endif %}>
+                <label for="star4" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+                <div id="tooltip-star4" class="absolute z-10 hidden opacity-0 px-3 py-2 text-sm font-medium text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700">Sympa !</div>
+            
+                <input type="radio" id="star5" class="sr-only" name="rating" value="5" {% if review_form.rating.value == 5 %}checked{% endif %}>
+                <label for="star5" class="cursor-pointer inline-flex items-center transition-transform transform hover:scale-125 ">
+                    <svg class="w-6 h-6 fill-current stroke-current stroke-2 transition-colors" viewBox="0 0 24 24">
+                        <use xlink:href="{% static 'images/icons.svg' %}#icon-star"></use>
+                    </svg>
+                </label>
+                <div id="tooltip-star5" class="absolute z-10 hidden opacity-0 px-3 py-2 text-sm font-medium text-black bg-stone-200 rounded-lg shadow-md tooltip dark:bg-gray-700">J'adore !!</div>
+            
+                {% for error in review_form.rating.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            
+
+
+            <div class="mb-4">
+                <label for="id_body" class="block text-sm font-medium text-gray-700 mb-2 mt-2">Commentaire</label>
+                <textarea name="body" id="id_body" rows="4" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ review_form.body.value|default_if_none:"" }}</textarea>
+                {% for error in review_form.body.errors %}
+                <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div> 
+            <div class="flex justify-end">
+                <button type="submit" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

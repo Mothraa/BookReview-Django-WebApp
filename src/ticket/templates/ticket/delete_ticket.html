@@ -1,4 +1,4 @@
-<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+{% comment %} <div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-white p-6 rounded-lg shadow-md w-1/3 min-w-[300px]">
         <h2 class="text-xl font-bold mb-4">Confirmez la suppression</h2>
         <form id="deleteForm" method="post" action="{% url 'delete_ticket' ticket_id=post.id %}" class="w-full">
@@ -10,4 +10,4 @@
             </div>
         </form>
     </div>
-</div>
+</div> {% endcomment %}

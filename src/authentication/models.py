@@ -27,7 +27,7 @@ class CustomUser(AbstractUser):
 
     # utilisation de l'email comme identifiant à la place du username par défaut dans AbstractUser
     email = models.EmailField(max_length=150, unique=True, blank=False)
-    # db_index=True ?
+
 
     username = None
     USERNAME_FIELD = "email"
@@ -38,22 +38,3 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
-    # CREATOR = 'CREATOR'
-    # SUBSCRIBER = 'SUBSCRIBER'
-
-    # ROLE_CHOICES = (
-    #     (CREATOR, 'Créateur'),
-    #     (SUBSCRIBER, 'Abonné'),
-    # )
-
-    # zip_code = models.CharField(blank=True, max_length=5)
-
-    # role = models.CharField(max_length=30, choices=ROLE_CHOICES, verbose_name='Rôle')
-
-    # pour calculer un champ a l'enregistrement, surcharger la methode save
-    # def save(self, *args, **kwargs):
-
-    #     if not self.nickname:
-    #         self.nickame = "toto"
-
-    #     super().save(*args, **kwargs)

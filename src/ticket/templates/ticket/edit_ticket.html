@@ -1,8 +1,61 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4 text-center">Modifier un ticket</h1>
+    
+    <div class="mb-8">
+        <form method="post" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
+            {{ edit_form.non_field_errors }}
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
+                <input type="text" name="title" id="title" value="{{ edit_form.title.value }}" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                {% for error in edit_form.title.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea name="description" id="description" rows="4" class="form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ edit_form.description.value }}</textarea>
+                {% for error in edit_form.description.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="mb-4">
+                <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+                <div class="flex items-center">
+                    <label for="image-upload" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 cursor-pointer">
+                        <span>Télécharger fichier</span>
+                    </label>
+                    <div class="ml-3">
+                        <span id="image-name" class="text-sm text-gray-600"></span>
+                    </div>
+                    <input type="file" name="image" id="image-upload" class="sr-only" onchange="displayFileName()" accept="image/jpeg, image/png, image/gif, image/webp">
+                </div>
+                {% if edit_form.image.value %}
+                    <p class="text-gray-600 mt-2">Image actuelle : <a href="{{ edit_form.image.value.url }}" target="_blank">{{ edit_form.image.value.name }}</a></p>
+                {% endif %}
+                {% for error in edit_form.image.errors %}
+                    <p class="text-red-500 text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
 
-<h1> toto </h1>
+            <div class="flex justify-end">
+                <a href="{% url 'posts' %}" class="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 ml-4 mr-4">Annuler</a>
+                <button type="submit" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% comment %} a déplacer dans le fichier js {% endcomment %}
+<script>
+    function displayFileName() {
+        const input = document.getElementById('image-upload');
+        const fileName = input.files[0].name;
+        document.getElementById('image-name').textContent = fileName;
+    }
+</script>
 {% endblock %}

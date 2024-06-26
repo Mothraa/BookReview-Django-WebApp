@@ -1,32 +1,29 @@
 {% extends 'base.html' %}
+{% load ticket_custom_filters %}
 
 {% block content %}
-    <div class="container mx-auto">
-        <div class="flex flex-wrap -mx-2">
-            <div class="w-full md:w-2/3 px-2 mb-4">
-                <h1 class="text-2xl font-bold mb-6">Flux</h1>
-                
-                <div class="flex justify-between mb-6">
-                    <a href="{% url 'demander_critique' %}" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">Demander une critique</a>
-                    <a href="{% url 'creer_critique' %}" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">Créer une critique</a>
-                </div>
-                
-                    <h2>Photos</h2>
-
-                    {% for ticket in tickets %}
-                    {% comment %} mettre une valeur par défaut quand pas de photo {% endcomment %}
-                        {% comment %} <img src="{{ ticket.image.url }}">
-                        <p>{{ ticket.image }}</p> {% endcomment %}
-                    {% endfor %}
-
+<div class="container mx-auto">
+    <div class="flex flex-wrap -mx-2">
+        <div class="w-full px-2">
+            <h1 class="text-2xl font-bold mb-6 text-center">Flux</h1>
+            
+            <div class="flex justify-between mb-6">
+                <a href="{% url 'demander_critique' %}" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">Demander une critique</a>
+                <a href="{% url 'create_ticket_and_review' %}" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">Créer une critique</a>
             </div>
+            
+            {% for post in posts %}
+                {% if post.content_type == 'REVIEW' %}
+                    {% include 'ticket/review_model.html' %}
+                {% elif post.content_type == 'TICKET' %}
+                    {% include 'ticket/ticket_model.html' %}
+                {% endif %}
+            {% empty %}
+                <p>Aucun post publié.</p>
+            {% endfor %}
+            
+            {% include 'ticket/pagination.html' with page_obj=posts %}
         </div>
     </div>
-    {% include 'ticket/pagination.html' with page_obj=tickets %}
-        {% comment %} {% for post in posts %}
-            {% if post.content_type == 'TICKET' %}
-            {% include 'ticket_snippet.html' %}
-            {% elif post.content_type == 'REVIEW' %}
-            {% include 'review_snippet.html' %}
-        {% endfor %} {% endcomment %}
+</div>
 {% endblock %}

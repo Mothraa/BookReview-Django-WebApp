@@ -51,17 +51,86 @@ def home(request):
 # @custom_pagination('tickets', 'tickets')
 @login_required
 def flux(request):
-    tickets = Ticket.objects.all()
 
-    paginator = Paginator(tickets, settings.NB_ITEM_PAGINATOR)
-    page_number = request.GET.get('page')
+    # on récupère les tickets et reviews de l'utilisateur, auquel on ajoute un "tag" pour les distinguer
+    tickets = Ticket.objects.all().annotate(content_type=Value('TICKET', CharField()))
+    reviews = Review.objects.all().annotate(content_type=Value('REVIEW', CharField()))
+
+    # Utilisateurs suivis par l'utilisateur connecté
+    # followed_users = UserFollows.objects.filter(user=request.user).values_list('followed_user', flat=True)
+    followed_users = request.user.following.all().values_list('followed_user', flat=True)
+    # print(followed_users)
+
+    # print(tickets)
+    # print(reviews)
+    followed_reviews = reviews.filter(user__in=followed_users)
+    followed_tickets = tickets.filter(user__in=followed_users)
+
+    # on regroupe les deux listes en une, que l'on trie par date antéchronologique
+    posts = sorted(chain(followed_reviews, followed_tickets), key=lambda post: post.time_created, reverse=True)
+
+    # Ajout de l'attribut user_has_replied
+    # for post in posts:
+    #     if hasattr(post, 'ticket'):
+    #         post.user_has_replied = Review.objects.filter(ticket=post.ticket, user=request.user).exists()
+    #     else:
+    #         post.user_has_replied = False
+
+    # on regarde pour chaque post si l'utilisateur y a déjà répondu ou pas
+    user_reply = {
+        post.id: post.ticket and Review.objects.filter(ticket=post.ticket, user=request.user).exists()
+        for post in posts if hasattr(post, 'ticket')
+    }
+    print(user_reply)
+    # Pagination des posts
+    post_paginator = Paginator(posts, settings.NB_ITEM_PAGINATOR)
+    post_page_number = request.GET.get('page')
     try:
-        paginated_tickets = paginator.page(page_number)
+        paginated_posts = post_paginator.page(post_page_number)
     except PageNotAnInteger:
-        paginated_tickets = paginator.page(1)
+        paginated_posts = post_paginator.page(1)
     except EmptyPage:
-        paginated_tickets = paginator.page(paginator.num_pages)
-    return render(request, 'ticket/flux.html', context={'tickets': paginated_tickets})
+        paginated_posts = post_paginator.page(post_paginator.num_pages)
+    # print("toto")
+    # print(posts)
+    return render(request, 'ticket/flux.html', context={'posts': paginated_posts, 'user_reply': user_reply})
+
+
+@login_required
+def create_ticket_and_review(request):
+    if request.method == 'POST':
+
+        ticket_form = TicketForm(request.POST, request.FILES)
+        review_form = ReviewForm(request.POST)
+
+        if ticket_form.is_valid() and review_form.is_valid():
+        # if all([ticket_form.is_valid(), review_form.is_valid()]):
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket  # on récupère le ticket qui vient d'etre créé pour y assigner la review
+            review.save()
+
+            messages.success(request, "Ticket et critique créées avec succès.")
+            return redirect('flux')
+        else:
+            print("Ticket form errors:", ticket_form.errors)
+            print("Review form errors:", review_form.errors)
+            messages.error(
+                request,
+                "Erreur lors de la création du ticket.\
+                Si l'erreur persiste veuillez prendre contact avec votre administrateur."
+            )
+    else:
+        ticket_form = TicketForm()
+        review_form = ReviewForm()
+    return render(request, 'ticket/create_ticket_and_review.html', {
+        'ticket_form': ticket_form,
+        'review_form': review_form,
+    })
 
 
 # @custom_pagination('posts', 'posts')
@@ -94,10 +163,10 @@ def posts(request):
     return render(request, 'ticket/posts.html', context={'posts': paginated_posts, 'user_reply': user_reply})
 
 
-@login_required
-def review_reply(request):
-    pass
-    return render(request, 'ticket/posts.html')
+# @login_required
+# def review_reply(request):
+#     pass
+#     return render(request, 'ticket/posts.html')
 
 
 @login_required
@@ -160,40 +229,34 @@ def create_ticket(request):
 
 
 @login_required
-def create_review(request):
+def create_review(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+
     if request.method == 'POST':
-        ticket_form = TicketForm(request.POST, request.FILES)
         review_form = ReviewForm(request.POST)
 
-        if ticket_form.is_valid() and review_form.is_valid():
-        # if all([ticket_form.is_valid(), review_form.is_valid()]):
-            ticket = ticket_form.save(commit=False)
-            ticket.user = request.user
-            ticket.save()
-
+        if review_form.is_valid():
             review = review_form.save(commit=False)
             review.user = request.user
-            review.ticket = ticket  # on récupère le ticket qui vient d'etre créé pour y assigner la review
+            review.ticket = ticket
             review.save()
 
-            messages.success(request, "Ticket et critique créées avec succès.")
-            return redirect('flux')
+            messages.success(request, "Critique créée avec succès.")
+            return redirect('posts')
         else:
-            print("Ticket form errors:", ticket_form.errors)
             print("Review form errors:", review_form.errors)
             messages.error(
                 request,
-                "Erreur lors de la création du ticket.\
+                "Erreur lors de la création de la critique.\
                 Si l'erreur persiste veuillez prendre contact avec votre administrateur."
             )
     else:
-        ticket_form = TicketForm()
         review_form = ReviewForm()
+    
     return render(request, 'ticket/create_review.html', {
-        'ticket_form': ticket_form,
         'review_form': review_form,
+        'ticket': ticket,
     })
-
 
 
 @login_required

@@ -1,3 +1,6 @@
+{% load static %}
+{% load ticket_custom_filters %}
+
 <div class="bg-white p-6 rounded-lg shadow-md mb-4">
     {% if post.user == request.user %}
         <p>Vous avez publié un ticket</p>
@@ -8,16 +11,20 @@
     <h2 class="font-semibold">{{ post.title }}</h2>
 
     <p class="mt-2">{{ post.description }}</p>
-    {% comment %} TODO : ajouter un bouton voir plus si la description est longue {% endcomment %}
+    <!-- TODO : ajouter un bouton voir plus si la description est longue -->
     {% if post.image %}
         <img class="mt-4" src="{{ post.image.url }}" alt="Image du ticket">
     {% endif %}
-    
-    {% comment %} <p>Utilisateur :{{ ticket.user.nickname }}</p> {% endcomment %}
-    {% if post.user == request.user %}
-        <div class="flex justify-end">
-            <a href="{% url 'edit_ticket' ticket_id=post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Modifier</a>
-            {% comment %} {% include 'ticket/delete_ticket.html' %} {% endcomment %}
+
+    <div class="flex justify-end mt-4">
+        {% if not post.reviews.exists %}
+            {% if not post|user_has_reviewed:request.user %}
+                <a href="{% url 'create_review' ticket_id=post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 ml-4">Créer une Critique</a>
+            {% endif %}
+        {% endif %}
+        
+        {% if post.user == request.user %}
+            <a href="{% url 'edit_ticket' ticket_id=post.id %}" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 ml-4">Modifier</a>
             <div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
                 <div class="bg-white p-6 rounded-lg shadow-md w-1/3 min-w-[300px]">
                     <h2 class="text-xl font-bold mb-4">Confirmez la suppression</h2>
@@ -31,10 +38,7 @@
                     </form>
                 </div>
             </div>
-            
-            <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 mt-4 ml-4">Supprimer</button>
-        </div>
-    {% endif %}
-
-
+            <button onclick="openModal('{{ post.id }}')" class="btn bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 ml-4">Supprimer</button>
+        {% endif %}
+    </div>
 </div>
