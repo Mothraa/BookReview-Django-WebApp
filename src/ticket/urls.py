@@ -17,7 +17,8 @@ from ticket.views import (home,
                           )
 
 urlpatterns = [
-    path('home/', home, name='home'),
+    path('home/', flux, name='home'),  # redirigé vers la vue flux lors de la connexion
+    # path('home/', home, name='home'),
     path('flux/', flux, name='flux'),
     path('posts/', posts, name='posts'),
     path('subscription/', subscription, name='subscription'),
@@ -29,5 +30,4 @@ urlpatterns = [
     path('review/<int:ticket_id>/create/', create_review, name='create_review'),  # review/<int:ticket_id>
     path('<int:ticket_id>/edit/', ticket_edit, name='edit_ticket'),
     path('<int:ticket_id>/delete/', ticket_delete, name='delete_ticket'),
-
 ]
