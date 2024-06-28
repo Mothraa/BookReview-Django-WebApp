@@ -35,7 +35,10 @@
                     <input type="file" name="image" id="image-upload" class="sr-only" onchange="displayFileName()" accept="image/jpeg, image/png, image/gif, image/webp">
                 </div>
                 {% if edit_form.image.value %}
-                    <p class="text-gray-600 mt-2">Image actuelle : <a href="{{ edit_form.image.value.url }}" target="_blank">{{ edit_form.image.value.name }}</a></p>
+                    <div class="mt-2">
+                        <p class="text-gray-600">Image actuelle :</p>
+                        <img src="{{ edit_form.image.value.url }}" alt="Image actuelle" class="mt-2 max-w-xs h-auto">
+                    </div>
                 {% endif %}
                 {% for error in edit_form.image.errors %}
                     <p class="text-red-500 text-sm">{{ error }}</p>

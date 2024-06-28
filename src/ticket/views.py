@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 # from django.urls import reverse_lazy
 
-from .forms import TicketForm, ReviewForm, FollowerForm, DeleteTicketForm  # Ticket, Review, 
+from .forms import TicketForm, ReviewForm, FollowerForm, DeleteTicketForm, DeleteReviewForm  # Ticket, Review, 
 from authentication.models import CustomUser
 from .models import UserFollows, Ticket, Review
 
@@ -81,7 +81,7 @@ def flux(request):
         post.id: post.ticket and Review.objects.filter(ticket=post.ticket, user=request.user).exists()
         for post in posts if hasattr(post, 'ticket')
     }
-    print(user_reply)
+    # print(user_reply)
     # Pagination des posts
     post_paginator = Paginator(posts, settings.NB_ITEM_PAGINATOR)
     post_page_number = request.GET.get('page')
@@ -173,9 +173,7 @@ def posts(request):
 def ticket_edit(request, ticket_id):
     # https://docs.djangoproject.com/fr/5.0/topics/http/shortcuts/
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    # logger.debug(f"Editing ticket with ID: {ticket.id}")
-    print(f"Editing ticket with ID: {ticket.id}")
-    # edit_form = TicketForm(instance=ticket)
+    # print(f"Edit ID: {ticket.id}")
     if request.method == 'POST':
         edit_form = TicketForm(request.POST, request.FILES, instance=ticket)
         if edit_form.is_valid():
@@ -192,7 +190,7 @@ def ticket_delete(request, ticket_id):
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     if request.method == 'POST':
         form = DeleteTicketForm(request.POST)
-        if form.is_valid() and form.cleaned_data['delete_ticket']:
+        if form.is_valid():  # and form.cleaned_data['delete_ticket']:
             ticket.delete()
             # print("Effacé !! ou presque...")
             messages.success(request, f"Ticket {ticket.title} supprimé.")
@@ -209,12 +207,11 @@ def create_ticket(request):
         form = TicketForm(request.POST, request.FILES)
 
         if form.is_valid():
-            print("form is valid")
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
             messages.success(request, f"Ticket {ticket.title} créé avec succès.")
-            return redirect('flux')
+            return redirect('posts')
         else:
             print("Ticket form errors:", form.errors)
             messages.error(
@@ -223,8 +220,9 @@ def create_ticket(request):
                 Si l'erreur persiste veuillez prendre contact avec votre administrateur."
             )
     else:
-        # print("Ticket form errors:", form.errors)
         form = TicketForm()
+        print("Ticket form errors:", form.errors)
+
     return render(request, 'ticket/create_ticket.html', {'form': form})
 
 
@@ -244,7 +242,7 @@ def create_review(request, ticket_id):
             messages.success(request, "Critique créée avec succès.")
             return redirect('posts')
         else:
-            print("Review form errors:", review_form.errors)
+            # print("Review form errors:", review_form.errors)
             messages.error(
                 request,
                 "Erreur lors de la création de la critique.\
@@ -260,16 +258,30 @@ def create_review(request, ticket_id):
 
 
 @login_required
-def review_edit(request):
-    return render(request, 'ticket/home.html')
+def review_edit(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if request.method == 'POST':
+        edit_form = ReviewForm(request.POST, instance=review)
+        if edit_form.is_valid():
+            edit_form.save()
+            return redirect('posts')
+    else:
+        edit_form = ReviewForm(instance=review)
+    return render(request, 'ticket/edit_review.html',  {'edit_form': edit_form})
 
 
 @login_required
-def review_delete(request):
-    return render(request, 'ticket/home.html')
-
-
-
+def review_delete(request, review_id):
+    review = get_object_or_404(Review, pk=review_id)
+    if request.method == 'POST':
+        form = DeleteReviewForm(request.POST)
+        if form.is_valid() and form.cleaned_data['delete_review']:
+            review.delete()
+            messages.success(request, f"Critique '{review.headline}' supprimée.")
+            return redirect('posts')
+        else:
+            messages.error(request, "Erreur de suppression.")
+    return redirect('posts')
 
 
 @login_required

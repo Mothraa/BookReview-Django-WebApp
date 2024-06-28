@@ -24,10 +24,10 @@ urlpatterns = [
     path('subscription/remove/<int:subscription_id>/', remove_subscription, name='remove_subscription'),
     path('request/', create_ticket, name='demander_critique'),
     path('request_with_review/', create_ticket_and_review, name='create_ticket_and_review'),
+    path('review/<int:review_id>/edit/', review_edit, name='edit_review'),
+    path('review/<int:review_id>/delete/', review_delete, name='delete_review'),
     path('review/<int:ticket_id>/create/', create_review, name='create_review'),  # review/<int:ticket_id>
     path('<int:ticket_id>/edit/', ticket_edit, name='edit_ticket'),
     path('<int:ticket_id>/delete/', ticket_delete, name='delete_ticket'),
-    # path('review/<int:ticket_id>/reply/', review_reply, name='reply_review'),
-    path('review/<int:ticket_id>/edit/', review_edit, name='edit_review'),
-    path('review/<int:ticket_id>/delete/', review_delete, name='delete_review'),
+
 ]

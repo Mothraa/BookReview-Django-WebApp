@@ -79,9 +79,10 @@ starLabels.forEach(label => {
         // Réinitialise la couleur de toutes les étoiles
         starLabels.forEach(starLabel => {
             starLabel.classList.remove('text-yellow-400');
+            starLabel.classList.remove('scale-125');
         });
-        console.log(id)
-        console.log(starLabels.length)
+        // console.log(id)
+        // console.log(starLabels.length)
         // Met à jour la couleur des étoiles sélectionnées et inférieures
         let foundSelected = false;
         for (let i = starLabels.length - 1; i >= 0; i--) {
@@ -103,6 +104,21 @@ starLabels.forEach(label => {
 });
 
 
+// Fonction pour mettre à jour les étoiles dès le chargement de la page
+function updateStarsOnLoad() {
+    // Sélectionner tous les labels des étoiles
+    const starLabels = document.querySelectorAll('label[for^="star"]');
+
+    // Sélectionner l'input radio de notation actuellement sélectionné
+    const currentRatingInput = document.querySelector('input[name="rating"]:checked');
+
+    // Si un input radio de notation est sélectionné, mettre à jour les étoiles
+    if (currentRatingInput) {
+        updateStars(starLabels, currentRatingInput);
+    }
+}
+
+// TODO : a déplacer dans un fichier JS spécifique a l'app ticket
 // tooltips pour les étoiles
 document.addEventListener('DOMContentLoaded', () => {
     // Affichage/masquage des tooltips
@@ -116,7 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
+// Exécuter la fonction d'initialisation des étoiles dès que le contenu de la page est chargé
+document.addEventListener('DOMContentLoaded', () => {
+    updateStarsOnLoad();
+});
 
 
 });
@@ -127,24 +146,33 @@ function displayFileName() {
     document.getElementById('image-name').textContent = fileName;
 }
 
+// TODO : a déplacer dans un fichier JS spécifique a l'app ticket
 
-// modal de suppression d'un ticket
-function openModal(ticket_id) {
-    const modal = document.getElementById('deleteModal');
-    const form = document.getElementById('deleteForm');
-    form.action = `/ticket/${ticket_id}/delete/`;
-    modal.classList.remove('hidden');
-}
-
-function closeModal() {
-    const modal = document.getElementById('deleteModal');
-    modal.classList.add('hidden');
-}
-
-// fermeture du modal lors du click a l'exterieur
-document.addEventListener('click', function(event) {
-    const modal = document.getElementById('deleteModal');
-    if (event.target === modal) {
-        modal.classList.add('hidden');
+function openModal(button) {
+    const modal = button.closest('.bg-white').querySelector('.deleteModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    } else {
+        console.error('erreur modal');
     }
+}
+
+function closeModal(button) {
+    const modal = button.closest('.deleteModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    } else {
+        console.error('erreur modal');
+    }
+}
+
+// Fermeture du modal lors du clic à l'extérieur
+document.addEventListener('click', function(event) {
+    const modals = document.querySelectorAll('.deleteModal');
+    modals.forEach(modal => {
+        if (modal && event.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
 });
+
