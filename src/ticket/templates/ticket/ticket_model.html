@@ -30,12 +30,13 @@
             <div class="deleteModal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
                 <div class="bg-white p-6 rounded-lg shadow-md w-1/3 min-w-[300px] max-w-md">
                     <h2 class="text-xl font-bold mb-4">Confirmez la suppression</h2>
+                    <p class="text-black py-2 px-4"> Attention, le ticket ainsi que l'ensemble des critiques associées vont être supprimés.</p>
                     <form method="post" action="{% url 'delete_ticket' ticket_id=post.id %}" class="w-full">
                         {% csrf_token %}
                         <input type="hidden" name="delete_ticket" value="true">
                         <div class="flex justify-end mt-4 w-full">
-                            <button type="submit" class="bg-red-700 text-white py-2 px-4 rounded hover:bg-red-800 mr-2">Supprimer</button>
                             <button type="button" onclick="closeModal(this)" class="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800">Annuler</button>
+                            <button type="submit" class="bg-red-700 text-white py-2 px-4 rounded hover:bg-red-800 mr-2">Supprimer</button>
                         </div>
                     </form>
                 </div>

@@ -43,7 +43,6 @@
         <ul>
             {% for abonne in abonnes %}
                 <li class="mb-2 p-2 text-black bg-stone-200 rounded-lg shadow-md dark:bg-gray-700">
-                    {% comment %} shadow-md {% endcomment %}
                     {{ abonne.user.nickname }}
                 </li>
             {% empty %}

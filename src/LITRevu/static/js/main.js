@@ -139,12 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 });
-// formulaire create_ticket : pour afficher le nom du fichier image une fois selectionné
-function displayFileName() {
-    const input = document.getElementById('image-upload');
-    const fileName = input.files[0].name;
-    document.getElementById('image-name').textContent = fileName;
-}
+
 
 // TODO : a déplacer dans un fichier JS spécifique a l'app ticket
 
@@ -175,4 +170,14 @@ document.addEventListener('click', function(event) {
         }
     });
 });
+
+// Affiche le nom du fichier image selectionné avant envoi du formulaire.
+// create_ticket.html et edit_ticket.html
+
+function displayFileName() {
+    const input = document.getElementById('image-upload');
+    const fileName = input.files[0].name;
+    document.getElementById('image-name').textContent = fileName;
+}
+
 

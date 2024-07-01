@@ -53,12 +53,4 @@
     </div>
 </div>
 
-{% comment %} a déplacer dans le fichier js {% endcomment %}
-<script>
-    function displayFileName() {
-        const input = document.getElementById('image-upload');
-        const fileName = input.files[0].name;
-        document.getElementById('image-name').textContent = fileName;
-    }
-</script>
 {% endblock %}
