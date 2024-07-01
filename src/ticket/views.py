@@ -1,5 +1,4 @@
 from itertools import chain
-from functools import wraps
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -7,48 +6,12 @@ from django.contrib import messages
 from django.db.models import Value, CharField
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
-# from django.urls import reverse_lazy
 
-from .forms import TicketForm, ReviewForm, FollowerForm, DeleteTicketForm, DeleteReviewForm  # Ticket, Review, 
+from .forms import TicketForm, ReviewForm, FollowerForm, DeleteTicketForm, DeleteReviewForm
 from authentication.models import CustomUser
 from .models import UserFollows, Ticket, Review
 
-# pour debug
-# import logging
-# logger = logging.getLogger(__name__)
-#####
 
-
-# def custom_pagination(queryset_name, context_name):
-#     def decorator(view_func):
-#         @wraps(view_func)
-#         def wrapper(request, *args, **kwargs):
-#             response = view_func(request, *args, **kwargs)
-
-#             if isinstance(response, dict):
-#                 queryset = response.get(queryset_name)
-#                 if queryset:
-#                     paginator = Paginator(queryset, settings.NB_ITEM_PAGINATOR)
-#                     page_number = request.GET.get('page')
-#                     try:
-#                         paginated_queryset = paginator.page(page_number)
-#                     except PageNotAnInteger:
-#                         paginated_queryset = paginator.page(1)
-#                     except EmptyPage:
-#                         paginated_queryset = paginator.page(paginator.num_pages)
-
-#                     response[context_name] = paginated_queryset
-#             return response
-#         return wrapper
-#     return decorator
-
-
-@login_required
-def home(request):
-    return render(request, 'ticket/home.html')
-
-
-# @custom_pagination('tickets', 'tickets')
 @login_required
 def flux(request):
 
@@ -57,32 +20,21 @@ def flux(request):
     reviews = Review.objects.all().annotate(content_type=Value('REVIEW', CharField()))
 
     # Utilisateurs suivis par l'utilisateur connecté
-    # followed_users = UserFollows.objects.filter(user=request.user).values_list('followed_user', flat=True)
     followed_users = request.user.following.all().values_list('followed_user', flat=True)
-    # print(followed_users)
 
-    # print(tickets)
-    # print(reviews)
     followed_reviews = reviews.filter(user__in=followed_users)
     followed_tickets = tickets.filter(user__in=followed_users)
 
     # on regroupe les deux listes en une, que l'on trie par date antéchronologique
     posts = sorted(chain(followed_reviews, followed_tickets), key=lambda post: post.time_created, reverse=True)
 
-    # Ajout de l'attribut user_has_replied
-    # for post in posts:
-    #     if hasattr(post, 'ticket'):
-    #         post.user_has_replied = Review.objects.filter(ticket=post.ticket, user=request.user).exists()
-    #     else:
-    #         post.user_has_replied = False
-
     # on regarde pour chaque post si l'utilisateur y a déjà répondu ou pas
     user_reply = {
         post.id: post.ticket and Review.objects.filter(ticket=post.ticket, user=request.user).exists()
         for post in posts if hasattr(post, 'ticket')
     }
-    # print(user_reply)
-    # Pagination des posts
+
+    # pagination
     post_paginator = Paginator(posts, settings.NB_ITEM_PAGINATOR)
     post_page_number = request.GET.get('page')
     try:
@@ -91,8 +43,7 @@ def flux(request):
         paginated_posts = post_paginator.page(1)
     except EmptyPage:
         paginated_posts = post_paginator.page(post_paginator.num_pages)
-    # print("toto")
-    # print(posts)
+
     return render(request, 'ticket/flux.html', context={'posts': paginated_posts, 'user_reply': user_reply})
 
 
@@ -104,7 +55,6 @@ def create_ticket_and_review(request):
         review_form = ReviewForm(request.POST)
 
         if ticket_form.is_valid() and review_form.is_valid():
-        # if all([ticket_form.is_valid(), review_form.is_valid()]):
             ticket = ticket_form.save(commit=False)
             ticket.user = request.user
             ticket.save()
@@ -117,8 +67,6 @@ def create_ticket_and_review(request):
             messages.success(request, "Ticket et critique créées avec succès.")
             return redirect('flux')
         else:
-            print("Ticket form errors:", ticket_form.errors)
-            print("Review form errors:", review_form.errors)
             messages.error(
                 request,
                 "Erreur lors de la création du ticket.\
@@ -133,7 +81,6 @@ def create_ticket_and_review(request):
     })
 
 
-# @custom_pagination('posts', 'posts')
 @login_required
 def posts(request):
 
@@ -142,6 +89,7 @@ def posts(request):
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
     reviews = Review.objects.filter(user=request.user)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
     # on regroupe les deux listes en une, que l'on trie par date antéchronologique
     posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
@@ -151,6 +99,7 @@ def posts(request):
         for post in posts if hasattr(post, 'ticket')
     }
 
+    # pagination
     paginator = Paginator(posts, settings.NB_ITEM_PAGINATOR)
     page_number = request.GET.get('page')
     try:
@@ -159,21 +108,13 @@ def posts(request):
         paginated_posts = paginator.page(1)
     except EmptyPage:
         paginated_posts = paginator.page(paginator.num_pages)
-
     return render(request, 'ticket/posts.html', context={'posts': paginated_posts, 'user_reply': user_reply})
-
-
-# @login_required
-# def review_reply(request):
-#     pass
-#     return render(request, 'ticket/posts.html')
 
 
 @login_required
 def ticket_edit(request, ticket_id):
     # https://docs.djangoproject.com/fr/5.0/topics/http/shortcuts/
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    # print(f"Edit ID: {ticket.id}")
     if request.method == 'POST':
         edit_form = TicketForm(request.POST, request.FILES, instance=ticket)
         if edit_form.is_valid():
@@ -181,7 +122,6 @@ def ticket_edit(request, ticket_id):
             return redirect('posts')
     else:
         edit_form = TicketForm(instance=ticket)
-
     return render(request, 'ticket/edit_ticket.html',  {'edit_form': edit_form})
 
 
@@ -190,14 +130,12 @@ def ticket_delete(request, ticket_id):
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     if request.method == 'POST':
         form = DeleteTicketForm(request.POST)
-        if form.is_valid():  # and form.cleaned_data['delete_ticket']:
+        if form.is_valid():
             ticket.delete()
-            # print("Effacé !! ou presque...")
             messages.success(request, f"Ticket {ticket.title} supprimé.")
             return redirect('posts')
         else:
             messages.error(request, "Erreur de suppression.")
-    # return redirect(reverse_lazy('posts'))
     return redirect('posts')
 
 
@@ -213,7 +151,6 @@ def create_ticket(request):
             messages.success(request, f"Ticket {ticket.title} créé avec succès.")
             return redirect('posts')
         else:
-            print("Ticket form errors:", form.errors)
             messages.error(
                 request,
                 "Erreur lors de la création du ticket.\
@@ -221,8 +158,6 @@ def create_ticket(request):
             )
     else:
         form = TicketForm()
-        print("Ticket form errors:", form.errors)
-
     return render(request, 'ticket/create_ticket.html', {'form': form})
 
 
@@ -238,11 +173,9 @@ def create_review(request, ticket_id):
             review.user = request.user
             review.ticket = ticket
             review.save()
-
             messages.success(request, "Critique créée avec succès.")
             return redirect('posts')
         else:
-            # print("Review form errors:", review_form.errors)
             messages.error(
                 request,
                 "Erreur lors de la création de la critique.\
@@ -250,11 +183,8 @@ def create_review(request, ticket_id):
             )
     else:
         review_form = ReviewForm()
-    
-    return render(request, 'ticket/create_review.html', {
-        'review_form': review_form,
-        'ticket': ticket,
-    })
+
+    return render(request, 'ticket/create_review.html', {'review_form': review_form, 'ticket': ticket})
 
 
 @login_required
@@ -303,10 +233,6 @@ def subscription(request):
                     'abonnes': request.user.followed_by.all()
                 })
 
-            # add_user_form.followed_user = followed_user_nickname
-            # add_user_form.user = request.user
-            # add_user_form.save()
-
             # Vérifie si l'utilisateur suit déjà l'autre utilisateur
             if UserFollows.objects.filter(user=request.user, followed_user=followed_user).exists():
                 messages.error(request, "Vous suivez déjà cet utilisateur.")
@@ -338,5 +264,4 @@ def remove_subscription(request, subscription_id):
         messages.success(request, f"Abonnement à {followed_user_nickname} supprimé.")
     except UserFollows.DoesNotExist:
         messages.error(request, "Vous ne suivez pas cet utilisateur.")
-
     return redirect('subscription')

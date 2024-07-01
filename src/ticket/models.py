@@ -14,7 +14,8 @@ class Ticket(models.Model):
     time_created = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        # TODO : ajouter un validator sur le format d'image pris en charge en entrée, actuellement fait uniquement par le frontend
+        # TODO : ajouter un validator sur le format d'image pris en charge en entrée
+        # actuellement fait uniquement par le frontend
         # surcharge de la methode save pour convertir les images
         if self.image and has_changed(self, 'image'):
             # Convertir l'image en jpg et créé des miniatures

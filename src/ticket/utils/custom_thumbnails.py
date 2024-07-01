@@ -1,7 +1,8 @@
 # pour la génération de thumbnails
-# snippet récupéré ici : http://mathieu.agopian.info/blog/django-redimensionner-une-image-a-la-volee-en-preservant-son-ratio.html
+# snippet récupéré ici :
+# http://mathieu.agopian.info/blog/django-redimensionner-une-image-a-la-volee-en-preservant-son-ratio.html
 from os import path
-from io import BytesIO, StringIO
+from io import BytesIO
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
@@ -50,7 +51,7 @@ def create_thumb(image, size):
     """Returns the image resized to fit inside a box of the given size"""
     image.thumbnail(size, Image.LANCZOS)
     # print("toto")
-    temp = BytesIO()#StringIO()
+    temp = BytesIO()
     image.save(temp, 'jpeg')
     temp.seek(0)
     return SimpleUploadedFile('temp', temp.read())

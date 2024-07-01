@@ -39,8 +39,9 @@ class ReviewForm(forms.ModelForm):
 class FollowerForm(forms.Form):
     followed_user = forms.CharField(
         widget=forms.TextInput(attrs={
-            # TODO : a revoir, pas eu besoin de ca pour l'authentification
-            'class': 'form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline',
+            # TODO : a revoir
+            'class': 'form-input w-full border rounded-md py-2 px-3 text-gray-700 leading-tight\
+            focus:outline-none focus:shadow-outline',
         })
     )
 
