@@ -15,18 +15,28 @@ from .models import UserFollows, Ticket, Review
 @login_required
 def flux(request):
 
-    # on récupère les tickets et reviews de l'utilisateur, auquel on ajoute un "tag" pour les distinguer
+    # récupère les tickets et reviews, auquel on ajoute un "tag" pour les distinguer
     tickets = Ticket.objects.all().annotate(content_type=Value('TICKET', CharField()))
     reviews = Review.objects.all().annotate(content_type=Value('REVIEW', CharField()))
 
     # Utilisateurs suivis par l'utilisateur connecté
     followed_users = request.user.following.all().values_list('followed_user', flat=True)
 
+    # tickets et reviews des utilisateurs suivis
     followed_reviews = reviews.filter(user__in=followed_users)
     followed_tickets = tickets.filter(user__in=followed_users)
 
-    # on regroupe les deux listes en une, que l'on trie par date antéchronologique
-    posts = sorted(chain(followed_reviews, followed_tickets), key=lambda post: post.time_created, reverse=True)
+    # Tickets créés par l'utilisateur connecté
+    user_tickets = tickets.filter(user=request.user)
+    # Reviews des tickets créés par l'utilisateur connecté
+    reviewers_of_my_tickets = reviews.filter(ticket__in=user_tickets)
+
+    # Combiner tous les posts en une seule liste
+    posts = sorted(
+        chain(followed_reviews, followed_tickets, reviewers_of_my_tickets),
+        key=lambda post: post.time_created,
+        reverse=True,
+    )
 
     # on regarde pour chaque post si l'utilisateur y a déjà répondu ou pas
     user_reply = {
