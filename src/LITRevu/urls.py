@@ -21,10 +21,8 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    # path('', index, name="index"),
     path('', include("authentication.urls")),
     path('ticket/', include("ticket.urls")),
-    # path('', include("authentication.urls")),
     path('app-admin/', admin.site.urls),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
