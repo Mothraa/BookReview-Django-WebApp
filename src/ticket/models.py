@@ -17,8 +17,11 @@ class Ticket(models.Model):
         # TODO : ajouter un validator sur le format d'image pris en charge en entrée
         # actuellement fait uniquement par le frontend
         # surcharge de la methode save pour convertir les images
+
+        # TODO : a mettre dans le formulaire https://docs.djangoproject.com/en/5.0/ref/forms/validation/
         if self.image and has_changed(self, 'image'):
             # Convertir l'image en jpg et créé des miniatures
+            # TODO : tester la chaine si diff de null
             filename = path.splitext(path.split(self.image.name)[-1])[0]
             filename = f"{filename}.jpg"
 
