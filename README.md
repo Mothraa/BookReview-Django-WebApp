@@ -39,15 +39,17 @@ pip install -r requirements.txt
 
 * Démarrer le serveur en local :
 ```bash
+cd src
 python manage.py runserver
 ```
 * Accès au serveur en local depuis un navigateur :
 http://localhost:8000/
 
 * Compte utilisateur de test :
-nom d'utilisateur : oc@projet9.com
+nom d'utilisateur : testeur@oc.com
 mot de passe : bKH4tnZNFU!#fnk6
 
+Présence de 2 autres utilisateurs : John et Michel
 La création de nouveaux comptes est possible.
 
 ## Langages & Librairies
