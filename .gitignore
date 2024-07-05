@@ -36,5 +36,8 @@ assets/
 .output/
 output/
 
+# media
+# media/
+
 # databases
-db.sqlite3
+#*.sqlite3
