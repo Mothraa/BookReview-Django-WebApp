@@ -53,7 +53,7 @@ La création de nouveaux comptes est possible.
 ## Langages & Librairies
 
 Front-End :
-* TailwindCSS : https://tailwindcss.com/
+* [Django-Tailwind](https://django-tailwind.readthedocs.io/en/latest/installation.html) pour utiliser [TailwindCSS](https://tailwindcss.com/) dans l'environnement Django
 * Javascript (Vanilla)
 
 Back-End :
