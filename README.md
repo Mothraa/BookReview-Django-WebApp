@@ -1,11 +1,10 @@
-# Developpement Front-End - Application pour publier des critiques de livres
+# Développez une application Web en utilisant Django
 
 ## À propos
 
 Formation OpenClassRooms - Utilisation de Django - Projet 9
 
-Développez une application Web en utilisant Django
-
+Application pour publier des critiques de livres et articles
 
 ## Prérequis
 
