@@ -14,7 +14,7 @@ from .models import UserFollows, Ticket, Review
 
 @login_required
 def flux(request):
-
+    "flux menu with tickets and reviews added by followed users or in reply of one ticket of the connected user"
     # récupère les tickets et reviews, auquel on ajoute un "tag" pour les distinguer
     tickets = Ticket.objects.all().annotate(content_type=Value('TICKET', CharField()))
     reviews = Review.objects.all().annotate(content_type=Value('REVIEW', CharField()))
@@ -59,6 +59,7 @@ def flux(request):
 
 @login_required
 def create_ticket_and_review(request):
+    """create a ticket and a review at the same time, button "Créer une critique"."""
     if request.method == 'POST':
 
         ticket_form = TicketForm(request.POST, request.FILES)
@@ -93,7 +94,7 @@ def create_ticket_and_review(request):
 
 @login_required
 def posts(request):
-
+    """post menu view with tickets and reviews added by the connected user"""
     # on récupère les tickets et reviews de l'utilisateur, auquel on ajoute un "tag" pour les distinguer
     tickets = Ticket.objects.filter(user=request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
@@ -123,6 +124,7 @@ def posts(request):
 
 @login_required
 def ticket_edit(request, ticket_id):
+    """modify an existing ticket post"""
     # https://docs.djangoproject.com/fr/5.0/topics/http/shortcuts/
     ticket = get_object_or_404(Ticket, id=ticket_id)
     if request.method == 'POST':
@@ -137,6 +139,7 @@ def ticket_edit(request, ticket_id):
 
 @login_required
 def ticket_delete(request, ticket_id):
+    """delete a ticket post"""
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     if request.method == 'POST':
         form = DeleteTicketForm(request.POST)
@@ -151,6 +154,7 @@ def ticket_delete(request, ticket_id):
 
 @login_required
 def create_ticket(request):
+    """create a new ticket post ("demande de critique")"""
     if request.method == 'POST':
         form = TicketForm(request.POST, request.FILES)
 
@@ -173,6 +177,7 @@ def create_ticket(request):
 
 @login_required
 def create_review(request, ticket_id):
+    """create a new review post"""
     ticket = get_object_or_404(Ticket, id=ticket_id)
 
     if request.method == 'POST':
@@ -199,6 +204,7 @@ def create_review(request, ticket_id):
 
 @login_required
 def review_edit(request, review_id):
+    """modify an existing review post"""
     review = get_object_or_404(Review, id=review_id)
     if request.method == 'POST':
         edit_form = ReviewForm(request.POST, instance=review)
@@ -212,6 +218,7 @@ def review_edit(request, review_id):
 
 @login_required
 def review_delete(request, review_id):
+    """view for deleting a review"""
     review = get_object_or_404(Review, pk=review_id)
     if request.method == 'POST':
         form = DeleteReviewForm(request.POST)
@@ -226,6 +233,7 @@ def review_delete(request, review_id):
 
 @login_required
 def subscription(request):
+    """Following new users by adding them"""
     if request.method == 'POST':
         add_user_form = FollowerForm(request.POST)
         add_user_form.user = request.user
@@ -243,7 +251,7 @@ def subscription(request):
                     'abonnes': request.user.followed_by.all()
                 })
 
-            # Vérifie si l'utilisateur suit déjà l'autre utilisateur
+            # Check if user is already following this user or not
             if UserFollows.objects.filter(user=request.user, followed_user=followed_user).exists():
                 messages.error(request, "Vous suivez déjà cet utilisateur.")
             else:
@@ -266,11 +274,11 @@ def subscription(request):
 
 @login_required
 def remove_subscription(request, subscription_id):
+    """remove users from following"""
     try:
         subscription = UserFollows.objects.get(id=subscription_id, user=request.user)
         followed_user_nickname = subscription.followed_user.nickname
         subscription.delete()
-        # TODO ajouter le nom de l'utilisateur
         messages.success(request, f"Abonnement à {followed_user_nickname} supprimé.")
     except UserFollows.DoesNotExist:
         messages.error(request, "Vous ne suivez pas cet utilisateur.")
