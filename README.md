@@ -13,41 +13,52 @@ Sans
 ## Installation
 
 Cloner le repository
+
 ```bash
 git clone https://github.com/Mothraa/OCR_projet9.git
 ```
+
 Créer l'environnement avec [venv](https://docs.python.org/fr/3/library/venv.html)
+
 ```bash
 python -m venv env
 ```
+
 Activer l'environnement
 
-- sous linux ou mac
+-   sous linux ou mac
+
 ```bash
 source env/bin/activate
 ```
-- sous windows
+
+-   sous windows
+
 ```bash
 env/scripts/activate
 ```
+
 Utiliser le gestionnaire de package [pip](https://docs.python.org/fr/dev/installing/index.html) pour installer les librairies python
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ## Utilisation
 
-* Démarrer le serveur en local :
+-   Démarrer le serveur en local :
+
 ```bash
 cd src
 python manage.py runserver
 ```
-* Accès au serveur en local depuis un navigateur :
-http://localhost:8000/
 
-* Compte utilisateur de test :
-nom d'utilisateur : testeur@oc.com
-mot de passe : bKH4tnZNFU!#fnk6
+-   Accès au serveur en local depuis un navigateur :
+    http://localhost:8000/
+
+-   Compte utilisateur de test :
+    nom d'utilisateur : testeur@oc.com
+    mot de passe : bKH4tnZNFU!#fnk6
 
 Présence de 2 autres utilisateurs : John et Michel
 La création de nouveaux comptes est possible.
@@ -55,14 +66,15 @@ La création de nouveaux comptes est possible.
 ## Langages & Librairies
 
 Front-End :
-* [Django-Tailwind](https://django-tailwind.readthedocs.io/en/latest/installation.html) pour utiliser [TailwindCSS](https://tailwindcss.com/) dans l'environnement Django
-* Javascript (Vanilla)
+
+-   [Django-Tailwind](https://django-tailwind.readthedocs.io/en/latest/installation.html) pour utiliser [TailwindCSS](https://tailwindcss.com/) dans l'environnement Django
+-   Javascript (Vanilla)
 
 Back-End :
-* Python avec [Django](https://www.djangoproject.com/) (architecture MVT)
-* [PIL/Pillow](https://pypi.org/project/pillow/) pour le redimensionnement des images
-* [SQLite](https://www.sqlite.org/) : stockage des données via l'ORM de Django
 
+-   Python avec [Django](https://www.djangoproject.com/) (architecture MVT)
+-   [PIL/Pillow](https://pypi.org/project/pillow/) pour le redimensionnement des images
+-   [SQLite](https://www.sqlite.org/) : stockage des données via l'ORM de Django
 
 ## Documentation
 
@@ -71,7 +83,20 @@ Les données présentes sont fictives et issues d'images open-source.
 
 L'application est paramétrée en mode developpement et debug ; elle n'est pas faite telle quelle pour un déploiement et une mise en production.
 
+## Captures d'écran
 
+![Page d'accueil](docs/projet9_capture3.png)
+![Page d'accueil](docs/projet9_capture4.png)
+
+_page d'accueil et création de compte_
+
+![Page followers](docs/projet9_capture2.png)
+
+_page de suivi des utilisateurs_
+
+![Page des critiques](docs/projet9_capture.png)
+
+_page des critiques_
 
 ## Gestion des versions
 
