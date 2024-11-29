@@ -85,18 +85,18 @@ L'application est paramétrée en mode developpement et debug ; elle n'est pas f
 
 ## Captures d'écran
 
-![Page d'accueil](docs/projet9_capture3.png)
-![Page d'accueil](docs/projet9_capture4.png)
-
 _page d'accueil et création de compte_
 
-![Page followers](docs/projet9_capture2.png)
+![Page d'accueil](docs/projet9_capture3.png)
+![creation de compte](docs/projet9_capture4.png)
 
 _page de suivi des utilisateurs_
 
-![Page des critiques](docs/projet9_capture.png)
+![Page followers](docs/projet9_capture2.png)
 
 _page des critiques_
+
+![Page des critiques](docs/projet9_capture.png)
 
 ## Gestion des versions
 
